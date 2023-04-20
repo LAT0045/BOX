@@ -10,4 +10,16 @@
     <string name="noAccount">Bạn Chưa Có Tài Khoản?</string>
     <string name="register">  Đăng Ký Ngay</string>
 
+    <string name="retype_pass">Nhập lại mật khẩu</string>
+    <string name="btn_sign_up">Đăng ký</string>
+    <string name="btn_confirm">Xác nhận</string>
+
+    <string name="hint_name">Tên của bạn là?</string>
+    <string name="hint_address">Địa chỉ nè</string>
+    <string name="avatar">Hình đại diện</string>
+    <string name="btn_select_img">Chọn ảnh</string>
+    <string name="btn_update">Cập nhật</string>
+
+    <string name="congratulation">Chúc mừng bạn đã đăng ký tài khoản thành công. Bây giờ chúng ta cùng trải nghiệm BOX nào</string>
+    <string name="btn_start">Bắt đầu thôi</string>
 </resources>
