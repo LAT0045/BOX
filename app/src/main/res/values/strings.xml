@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">BOX</string>
+    <string name="hint_user">SĐT</string>
+    <string name="hint_pass">Mật Khẩu</string>
+    <string name="forget_pass">Quên Mật Khẩu?</string>
+    <string name="btn_login">Đăng Nhập</string>
+    <string name="or">Hoặc</string>
+    <string name="face_login">Đăng Nhập Bằng Facebook</string>
+    <string name="gmail_login">Đăng Nhập Bằng Gmail</string>
+    <string name="noAccount">Bạn Chưa Có Tài Khoản?</string>
+    <string name="register">  Đăng Ký Ngay</string>
+
 </resources>
