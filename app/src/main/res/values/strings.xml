@@ -22,4 +22,8 @@
 
     <string name="congratulation">Chúc mừng bạn đã đăng ký tài khoản thành công. Bây giờ chúng ta cùng trải nghiệm BOX nào</string>
     <string name="btn_start">Bắt đầu thôi</string>
+
+    <string name="slogan">Tình yêu chỉ là hạt cát, vì đồ ăn đã lấn át tình yêu.</string>
+    <string name="location">Có phải bạn đang ở:</string>
+
 </resources>

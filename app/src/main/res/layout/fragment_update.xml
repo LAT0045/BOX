@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_20sdp"
         android:inputType="text"
-        android:hint="@string/hint_name"
+        android:hint="@string/hint_address"
         android:textColorHint="@color/gray"
         app:backgroundTint="@color/orange"
         android:fontFamily="@font/comfortaa_variablefont_wght"/>

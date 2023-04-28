@@ -32,11 +32,16 @@
         android:textAlignment="center"
         android:layout_marginTop="@dimen/_30sdp"/>
 
+    <ImageView
+        android:layout_width="@dimen/_120sdp"
+        android:layout_height="@dimen/_120sdp"
+        android:background="@drawable/congrate"
+        android:layout_marginTop="@dimen/_30sdp"/>
     <RelativeLayout
         android:id="@+id/btn_start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_20sdp">
+        android:layout_marginTop="@dimen/_50sdp">
         <ImageView
             android:layout_width="@dimen/_100sdp"
             android:layout_height="@dimen/_35sdp"
