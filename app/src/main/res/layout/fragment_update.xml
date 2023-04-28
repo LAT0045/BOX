@@ -25,7 +25,7 @@
         android:hint="@string/hint_name"
         android:textColorHint="@color/gray"
         app:backgroundTint="@color/orange"
-        android:fontFamily="@font/poppins_regular"/>
+        android:fontFamily="@font/comfortaa_variablefont_wght"/>
 
     <androidx.appcompat.widget.AppCompatEditText
         android:layout_width="@dimen/_230sdp"
@@ -35,13 +35,13 @@
         android:hint="@string/hint_name"
         android:textColorHint="@color/gray"
         app:backgroundTint="@color/orange"
-        android:fontFamily="@font/poppins_regular"/>
+        android:fontFamily="@font/comfortaa_variablefont_wght"/>
 
     <TextView
         android:layout_width="@dimen/_230sdp"
         android:layout_height="wrap_content"
         android:text="@string/avatar"
-        android:fontFamily="@font/poppins_regular"
+        android:fontFamily="@font/comfortaa_variablefont_wght"
         android:textSize="@dimen/_17ssp"
         android:textColor="@color/black"
         android:layout_marginTop="@dimen/_20sdp"/>
@@ -62,7 +62,7 @@
         android:layout_height="wrap_content"
         android:text="@string/btn_select_img"
         android:textColor="@color/blue"
-        android:fontFamily="@font/poppins_regular"
+        android:fontFamily="@font/comfortaa_variablefont_wght"
         android:textSize="@dimen/_20ssp"
         android:layout_marginTop="@dimen/_20sdp"/>
 
@@ -80,7 +80,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:fontFamily="@font/poppins_regular"
+            android:fontFamily="@font/comfortaa_variablefont_wght"
             android:text="@string/btn_update"
             android:textColor="@color/white"
             android:textSize="@dimen/_13sdp" />

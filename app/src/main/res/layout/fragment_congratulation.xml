@@ -26,7 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/congratulation"
-        android:fontFamily="@font/poppins_regular"
+        android:fontFamily="@font/comfortaa_variablefont_wght"
         android:textColor="@color/orange"
         android:textSize="@dimen/_17ssp"
         android:textAlignment="center"
@@ -46,7 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:fontFamily="@font/poppins_regular"
+            android:fontFamily="@font/comfortaa_variablefont_wght"
             android:text="@string/btn_start"
             android:textColor="@color/white"
             android:textSize="@dimen/_13sdp" />
