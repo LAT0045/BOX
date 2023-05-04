@@ -17,6 +17,7 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
@@ -45,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Click sign up button
         clickSignUpBtn();
+
+        clickFacebookBtn();
     }
 
     private void initializeUI() {
@@ -58,6 +61,11 @@ public class MainActivity extends AppCompatActivity {
         facebookBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                FacebookSdk.setApplicationId("588157929942527");
+                FacebookSdk.setClientToken("17b807549fda167aa831ae1767c0fe40");
+
+                FacebookSdk.sdkInitialize(getApplicationContext());
+
                 LoginManager.getInstance().logInWithReadPermissions(MainActivity.this, Arrays.asList("email", "public_profile"));
                 CallbackManager callbackManager = CallbackManager.Factory.create();
 
