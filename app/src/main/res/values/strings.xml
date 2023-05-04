@@ -26,4 +26,6 @@
     <string name="slogan">Tình yêu chỉ là hạt cát, vì đồ ăn đã lấn át tình yêu.</string>
     <string name="location">Có phải bạn đang ở:</string>
 
+    <string name="facebook_app_id">588157929942527</string>
+    <string name="facebook_client_token">17b807549fda167aa831ae1767c0fe40</string>
 </resources>
