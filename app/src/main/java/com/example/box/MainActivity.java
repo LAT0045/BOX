@@ -20,6 +20,7 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -61,10 +62,12 @@ public class MainActivity extends AppCompatActivity {
         facebookBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FacebookSdk.setApplicationId("588157929942527");
-                FacebookSdk.setClientToken("17b807549fda167aa831ae1767c0fe40");
+                FacebookSdk.setApplicationId("1418588802292677");
+                FacebookSdk.setClientToken("ea744160e94a86857cead716506d0c86");
 
                 FacebookSdk.sdkInitialize(getApplicationContext());
+
+                Log.d("Hash", "Facebook hash key: ${FacebookSdk.getApplicationSignature(this)}");
 
                 LoginManager.getInstance().logInWithReadPermissions(MainActivity.this, Arrays.asList("email", "public_profile"));
                 CallbackManager callbackManager = CallbackManager.Factory.create();
