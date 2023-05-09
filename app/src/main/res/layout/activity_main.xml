@@ -93,7 +93,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/facebookBtn"
+        android:id="@+id/facebook_btn"
         android:layout_width="@dimen/_230sdp"
         android:layout_height="@dimen/_33sdp"
         android:background="@drawable/btn_gray_background"
@@ -120,6 +120,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/google_btn"
         android:layout_width="@dimen/_230sdp"
         android:layout_height="@dimen/_33sdp"
         android:background="@drawable/btn_gray_background"
@@ -161,7 +162,7 @@
             android:textSize="@dimen/_13sdp"/>
 
         <TextView
-            android:id="@+id/btn_sign_up"
+            android:id="@+id/sign_up_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/register"

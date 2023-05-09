@@ -1,5 +1,7 @@
 package com.example.box;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,19 +18,29 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
     private TextView signUpBtn;
     private LinearLayout facebookBtn;
+    private LinearLayout googleBtn;
 
     private FirebaseAuth mAuth;
     private CallbackManager mCallbackManager;
+
+    private ActivityResultLauncher<Intent> activityResultLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,14 +56,34 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
+        activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    Task<GoogleSignInAccount> task = GoogleSignIn
+                            .getSignedInAccountFromIntent(result.getData());
+
+                    try
+                    {
+                        GoogleSignInAccount googleSignInAccount = task.getResult(ApiException.class);
+                        handleGoogleAccessToken(googleSignInAccount.getIdToken());
+                    }
+
+                    catch (ApiException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                });
+
         // Initialize UI
         initializeUI();
 
         // Click sign up button
         clickSignUpBtn();
 
-        //Click facebook button
+        // Click facebook button
         clickFacebookBtn();
+
+        // Click google button
+        clickGoogleBtn();
     }
 
     @Override
@@ -61,8 +93,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initializeUI() {
-        signUpBtn = (TextView) findViewById(R.id.btn_sign_up);
-        facebookBtn = (LinearLayout) findViewById(R.id.facebookBtn);
+        signUpBtn = (TextView) findViewById(R.id.sign_up_btn);
+        facebookBtn = (LinearLayout) findViewById(R.id.facebook_btn);
+        googleBtn = (LinearLayout) findViewById(R.id.google_btn);
     }
 
     private void clickFacebookBtn() {
@@ -114,6 +147,43 @@ public class MainActivity extends AppCompatActivity {
                     else {
                         // If sign in fails, display a message to the user.
                         Toast.makeText(MainActivity.this, "Authentication failed.", Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                });
+    }
+
+    private void clickGoogleBtn() {
+        googleBtn.setOnClickListener(v -> configureGoogleLogIn());
+    }
+
+    private void configureGoogleLogIn() {
+        GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
+        Intent signInIntent = googleSignInClient.getSignInIntent();
+        activityResultLauncher.launch(signInIntent);
+    }
+
+    private void handleGoogleAccessToken(String idToken) {
+        // Got an ID token from Google. Use it to authenticate
+        // with Firebase.
+        AuthCredential firebaseCredential = GoogleAuthProvider.getCredential(idToken, null);
+        mAuth.signInWithCredential(firebaseCredential)
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful())
+                    {
+                        // Sign in success, update UI with the signed-in user's information
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        loadHomePage();
+                    }
+
+                    else
+                    {
+                        // If sign in fails, display a message to the user.
+                        Toast.makeText(MainActivity.this, "Fail to log in", Toast.LENGTH_SHORT)
                                 .show();
                     }
                 });
