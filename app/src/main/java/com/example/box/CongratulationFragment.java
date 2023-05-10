@@ -5,7 +5,6 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,22 +35,19 @@ public class CongratulationFragment extends Fragment {
     }
 
     private void initializeUI() {
-        backBtn = (ImageView) view.findViewById(R.id.btn_back);
+        backBtn = view.findViewById(R.id.btn_back);
     }
 
     private void clickBack() {
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Get SignUpUpdateInfoFragment from back stack using "signUpInfoFragment" tag
-                UpdateFragment updateFragment = (UpdateFragment) fragmentManager
-                        .findFragmentByTag("updateFragment");
+        backBtn.setOnClickListener(v -> {
+            // Get SignUpUpdateInfoFragment from back stack using "signUpInfoFragment" tag
+            UpdateFragment updateFragment = (UpdateFragment) fragmentManager
+                    .findFragmentByTag("updateFragment");
 
-                // Replace current fragment with update fragment and not add to back stack
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, updateFragment, "updateFragment")
-                        .commit();
-            }
+            // Replace current fragment with update fragment and not add to back stack
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container, updateFragment, "updateFragment")
+                    .commit();
         });
     }
 }

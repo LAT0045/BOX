@@ -1,14 +1,11 @@
 package com.example.box;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Bundle;
-import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
 
 public class Home extends AppCompatActivity {
     private ViewPager2 viewPager2;
@@ -30,8 +27,8 @@ public class Home extends AppCompatActivity {
     }
 
     private void initializeUI() {
-        viewPager2 = (ViewPager2) findViewById(R.id.view_pager);
-        bottomNav = (BottomNavigationView) findViewById(R.id.bottom_nav);
+        viewPager2 = findViewById(R.id.view_pager);
+        bottomNav = findViewById(R.id.bottom_nav);
     }
 
     private void setUpViewPager() {
@@ -66,29 +63,26 @@ public class Home extends AppCompatActivity {
     }
 
     private void selectOption() {
-        bottomNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId())
-                {
-                    case R.id.home:
-                        viewPager2.setCurrentItem(0);
-                        break;
-                    case R.id.favorite:
-                        viewPager2.setCurrentItem(1);
-                        break;
-                    case R.id.order:
-                        viewPager2.setCurrentItem(2);
-                        break;
-                    case R.id.notification:
-                        viewPager2.setCurrentItem(3);
-                        break;
-                    case R.id.account:
-                        viewPager2.setCurrentItem(4);
-                        break;
-                }
-                return true;
+        bottomNav.setOnItemSelectedListener(item -> {
+            switch (item.getItemId())
+            {
+                case R.id.home:
+                    viewPager2.setCurrentItem(0);
+                    break;
+                case R.id.favorite:
+                    viewPager2.setCurrentItem(1);
+                    break;
+                case R.id.order:
+                    viewPager2.setCurrentItem(2);
+                    break;
+                case R.id.notification:
+                    viewPager2.setCurrentItem(3);
+                    break;
+                case R.id.account:
+                    viewPager2.setCurrentItem(4);
+                    break;
             }
+            return true;
         });
     }
 }
