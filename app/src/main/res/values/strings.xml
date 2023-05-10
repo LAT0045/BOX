@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">BOX</string>
+    <string name="hint_user">SĐT</string>
+    <string name="hint_pass">Mật Khẩu</string>
+    <string name="forget_pass">Quên Mật Khẩu?</string>
+    <string name="btn_login">Đăng Nhập</string>
+    <string name="or">Hoặc</string>
+    <string name="face_login">Đăng Nhập Bằng Facebook</string>
+    <string name="gmail_login">Đăng Nhập Bằng Gmail</string>
+    <string name="noAccount">Bạn Chưa Có Tài Khoản?</string>
+    <string name="register">  Đăng Ký Ngay</string>
+
+    <string name="retype_pass">Nhập lại mật khẩu</string>
+    <string name="btn_sign_up">Đăng ký</string>
+    <string name="btn_confirm">Xác nhận</string>
+
+    <string name="hint_name">Tên của bạn là?</string>
+    <string name="hint_address">Địa chỉ nè</string>
+    <string name="avatar">Hình đại diện</string>
+    <string name="btn_select_img">Chọn ảnh</string>
+    <string name="btn_update">Cập nhật</string>
+
+    <string name="congratulation">Chúc mừng bạn đã đăng ký tài khoản thành công. Bây giờ chúng ta cùng trải nghiệm BOX nào</string>
+    <string name="btn_start">Bắt đầu thôi</string>
+
+    <string name="slogan">Tình yêu chỉ là hạt cát, vì đồ ăn đã lấn át tình yêu.</string>
+    <string name="location">Có phải bạn đang ở:</string>
+
+    <string name="facebook_app_id">1418588802292677</string>
+    <string name="facebook_client_token">ea744160e94a86857cead716506d0c86</string>
+
+    <string name="home">Home</string>
+    <string name="favorite">Yêu thích</string>
+    <string name="order">Đơn hàng</string>
+    <string name="notification">Thông báo</string>
+    <string name="account">Tài khoản</string>
+
+</resources>
