@@ -1,11 +1,18 @@
 package com.example.box;
 
+import android.Manifest;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -23,6 +30,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.CancellationToken;
+import com.google.android.gms.tasks.CancellationTokenSource;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -30,9 +43,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
+    private final String IPStr = "192.168.1.6";
+
     private TextView signUpBtn;
     private LinearLayout facebookBtn;
     private LinearLayout googleBtn;
@@ -42,36 +60,39 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityResultLauncher<Intent> activityResultLauncher;
 
+    private FusedLocationProviderClient fusedLocationProviderClient;
+    private final int LOCATION_REQUEST_CODE = 100;
+    private String id = "";
+    private String name = "";
+    private String currentAddress = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
 
-        if (FirebaseAuth.getInstance().getCurrentUser() != null)
-        {
+        mAuth = FirebaseAuth.getInstance();
+
+        if (mAuth.getCurrentUser() != null) {
             //User is already logged in
             loadHomePage();
         }
-
-        mAuth = FirebaseAuth.getInstance();
 
         activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     Task<GoogleSignInAccount> task = GoogleSignIn
                             .getSignedInAccountFromIntent(result.getData());
 
-                    try
-                    {
+                    try {
                         GoogleSignInAccount googleSignInAccount = task.getResult(ApiException.class);
-                        handleGoogleAccessToken(googleSignInAccount.getIdToken());
-                    }
-
-                    catch (ApiException e)
-                    {
+                        handleGoogleAccessToken(googleSignInAccount);
+                    } catch (ApiException e) {
                         throw new RuntimeException(e);
                     }
                 });
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(MainActivity.this);
 
         // Initialize UI
         initializeUI();
@@ -90,6 +111,17 @@ public class MainActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == LOCATION_REQUEST_CODE) {
+            // Permission accepted
+            saveUserInfo();
+
+        }
     }
 
     private void initializeUI() {
@@ -142,9 +174,7 @@ public class MainActivity extends AppCompatActivity {
                         // Sign in success, update UI with the signed-in user's information
                         //FirebaseUser user = mAuth.getCurrentUser();
                         loadHomePage();
-                    }
-
-                    else {
+                    } else {
                         // If sign in fails, display a message to the user.
                         Toast.makeText(MainActivity.this, "Authentication failed.", Toast.LENGTH_SHORT)
                                 .show();
@@ -167,21 +197,25 @@ public class MainActivity extends AppCompatActivity {
         activityResultLauncher.launch(signInIntent);
     }
 
-    private void handleGoogleAccessToken(String idToken) {
-        // Got an ID token from Google. Use it to authenticate
-        // with Firebase.
+    private void handleGoogleAccessToken(GoogleSignInAccount googleSignInAccount) {
+        // Got an ID token from Google
+        String idToken = googleSignInAccount.getIdToken();
+
+        // Use it to authenticate with Firebase
         AuthCredential firebaseCredential = GoogleAuthProvider.getCredential(idToken, null);
         mAuth.signInWithCredential(firebaseCredential)
                 .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful())
-                    {
+                    if (task.isSuccessful()) {
                         // Sign in success, update UI with the signed-in user's information
                         FirebaseUser user = mAuth.getCurrentUser();
-                        loadHomePage();
-                    }
 
-                    else
-                    {
+                        // Get userID, name
+                        id = user.getUid();
+                        name = googleSignInAccount.getDisplayName();
+
+                        // Save the user information to MySQL
+                        saveUserInfo();
+                    } else {
                         // If sign in fails, display a message to the user.
                         Toast.makeText(MainActivity.this, "Fail to log in", Toast.LENGTH_SHORT)
                                 .show();
@@ -189,8 +223,88 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+    private void saveUserInfo() {
+        // Get current location
+        // Check if user grant permission
+        if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED) {
+
+            CancellationTokenSource tokenSource = new CancellationTokenSource();
+            CancellationToken token = tokenSource.getToken();
+
+            // Permission granted
+            fusedLocationProviderClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, token)
+                    .addOnSuccessListener(location -> {
+                        if (location != null) {
+                            currentAddress = getAddress(location);
+
+                            // Save information to MySQL
+                            String urlStr = "http://" + IPStr + "/box/signUp.php";
+
+                            UserHandler userHandler = new UserHandler(output -> {
+                                // Do whatever with output here
+                            });
+
+
+                            userHandler.execute(UserHandler.TYPE_SIGN_UP, urlStr, id, currentAddress, name);
+
+                            // Load the home page
+                            loadHomePage();
+                        }
+                    });
+        } else {
+            // Permission not granted
+
+            requestPermission();
+        }
+    }
+
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(MainActivity.this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                LOCATION_REQUEST_CODE);
+    }
+
+    private String getAddress(Location location) {
+        String res = "";
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+
+        try
+        {
+            double longitude = location.getLongitude();
+            double latitude = location.getLatitude();
+
+            List<Address> addressList =
+                    geocoder.getFromLocation(latitude, longitude, 1);
+
+            if (addressList != null)
+            {
+                Address address = addressList.get(0);
+                StringBuilder stringBuilder = new StringBuilder();
+
+                for (int i = 0; i <= address.getMaxAddressLineIndex(); i++)
+                {
+                    stringBuilder.append(address.getAddressLine(i))
+                            .append("\n");
+                }
+
+                res = stringBuilder.toString();
+            }
+        }
+
+        catch (IOException e)
+        {
+            throw new RuntimeException(e);
+        }
+
+        return res;
+    }
+
     private void loadHomePage() {
         Intent intent = new Intent(MainActivity.this, Home.class);
+        intent.putExtra("Address", currentAddress);
         startActivity(intent);
     }
 

@@ -12,7 +12,6 @@
         android:orientation="horizontal"
         android:layout_marginTop="@dimen/_10sdp">
 
-
         <ImageView
             android:layout_width="@dimen/_45sdp"
             android:layout_height="@dimen/_30sdp"
@@ -56,11 +55,11 @@
             android:layout_gravity="center_vertical"/>
 
         <TextView
+            android:id="@+id/location_text"
             android:layout_width="@dimen/_280sdp"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="@string/congratulation"
             android:fontFamily="@font/comfortaa_variablefont_wght"
             android:textSize="@dimen/_10sdp"
             android:layout_marginStart="@dimen/_3sdp"
