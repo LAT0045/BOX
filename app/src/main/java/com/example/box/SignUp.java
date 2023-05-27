@@ -1,5 +1,6 @@
 package com.example.box;
 
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
@@ -36,4 +37,5 @@ public class SignUp extends AppCompatActivity {
     private void initializeUI() {
         container = (FrameLayout) findViewById(R.id.container);
     }
+
 }
