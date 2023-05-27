@@ -1,13 +1,6 @@
 package com.example.box;
 
 import android.Manifest;
-
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -17,6 +10,12 @@ import android.os.Bundle;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -31,11 +30,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.CancellationToken;
-import com.google.android.gms.tasks.CancellationTokenSource;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -81,14 +76,21 @@ public class MainActivity extends AppCompatActivity {
 
         activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    Task<GoogleSignInAccount> task = GoogleSignIn
-                            .getSignedInAccountFromIntent(result.getData());
+                    if (result.getResultCode() != RESULT_CANCELED && result.getData() != null)
+                    {
+                        Task<GoogleSignInAccount> task = GoogleSignIn
+                                .getSignedInAccountFromIntent(result.getData());
 
-                    try {
-                        GoogleSignInAccount googleSignInAccount = task.getResult(ApiException.class);
-                        handleGoogleAccessToken(googleSignInAccount);
-                    } catch (ApiException e) {
-                        throw new RuntimeException(e);
+                        try
+                        {
+                            GoogleSignInAccount googleSignInAccount = task.getResult(ApiException.class);
+                            handleGoogleAccessToken(googleSignInAccount);
+                        }
+
+                        catch (ApiException e)
+                        {
+                            throw new RuntimeException(e);
+                        }
                     }
                 });
 
@@ -117,10 +119,15 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == LOCATION_REQUEST_CODE) {
+        if (requestCode == LOCATION_REQUEST_CODE)
+        {
             // Permission accepted
             saveUserInfo();
+        }
 
+        else
+        {
+            Toast.makeText(this, "Cần location permission để chạy", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -205,7 +212,8 @@ public class MainActivity extends AppCompatActivity {
         AuthCredential firebaseCredential = GoogleAuthProvider.getCredential(idToken, null);
         mAuth.signInWithCredential(firebaseCredential)
                 .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
+                    if (task.isSuccessful())
+                    {
                         // Sign in success, update UI with the signed-in user's information
                         FirebaseUser user = mAuth.getCurrentUser();
 
@@ -215,7 +223,10 @@ public class MainActivity extends AppCompatActivity {
 
                         // Save the user information to MySQL
                         saveUserInfo();
-                    } else {
+                    }
+
+                    else
+                    {
                         // If sign in fails, display a message to the user.
                         Toast.makeText(MainActivity.this, "Fail to log in", Toast.LENGTH_SHORT)
                                 .show();
@@ -230,12 +241,8 @@ public class MainActivity extends AppCompatActivity {
                 == PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION)
                         == PackageManager.PERMISSION_GRANTED) {
-
-            CancellationTokenSource tokenSource = new CancellationTokenSource();
-            CancellationToken token = tokenSource.getToken();
-
             // Permission granted
-            fusedLocationProviderClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, token)
+            fusedLocationProviderClient.getLastLocation()
                     .addOnSuccessListener(location -> {
                         if (location != null) {
                             currentAddress = getAddress(location);
@@ -244,19 +251,28 @@ public class MainActivity extends AppCompatActivity {
                             String urlStr = "http://" + IPStr + "/box/signUp.php";
 
                             UserHandler userHandler = new UserHandler(output -> {
-                                // Do whatever with output here
+                                if (output.equals("YES"))
+                                {
+                                    // Load the home page
+                                    loadHomePage();
+                                }
+
+                                else
+                                {
+                                    Toast.makeText(MainActivity.this, "Lỗi đăng nhập", Toast.LENGTH_SHORT)
+                                            .show();
+                                }
                             });
 
 
-                            userHandler.execute(UserHandler.TYPE_SIGN_UP, urlStr, id, currentAddress, name);
-
-                            // Load the home page
-                            loadHomePage();
+                            userHandler.execute(UserHandler.TYPE_SIGN_UP_GOOGLE, urlStr, id, currentAddress, name);
                         }
                     });
-        } else {
-            // Permission not granted
+        }
 
+        else
+        {
+            // Permission not granted
             requestPermission();
         }
     }

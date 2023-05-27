@@ -18,6 +18,7 @@
         android:layout_marginTop="@dimen/_10sdp"/>
 
     <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/name_edit_text"
         android:layout_width="@dimen/_230sdp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_40sdp"
@@ -28,10 +29,14 @@
         android:fontFamily="@font/comfortaa_variablefont_wght"/>
 
     <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/address_edit_text"
         android:layout_width="@dimen/_230sdp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_20sdp"
-        android:inputType="text"
+        android:clickable="false"
+        android:cursorVisible="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:hint="@string/hint_address"
         android:textColorHint="@color/gray"
         app:backgroundTint="@color/orange"
@@ -58,6 +63,7 @@
         app:shapeAppearanceOverlay="@style/roundedImageView"/>
 
     <TextView
+        android:id="@+id/select_avatar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/btn_select_img"
