@@ -74,6 +74,6 @@
             android:text="@string/btn_sign_up"
             android:textColor="@color/white"
             android:textSize="@dimen/_13sdp"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
     </RelativeLayout>
 </LinearLayout>

@@ -95,24 +95,32 @@ public class LocationPicker implements OnMapReadyCallback, ActivityCompat.OnRequ
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
+        // Set up the map and get the current location based on gps
         myMap = googleMap;
         getCurrentLocation();
 
+        // Get the location when move the marker
         myMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(@NonNull LatLng latLng) {
+                // Remove the previous marker if exists
                 if (currentMarker != null)
                 {
                     currentMarker.remove();
                 }
 
+                // Create new marker and zoom camera to the location
                 currentMarker = myMap.addMarker(new MarkerOptions().position(latLng).title("Current Location"));
                 myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,  10));
 
+                // Get the full address
                 Double latitude = latLng.latitude;
                 Double longitude = latLng.longitude;
                 curAddress = "";
                 curAddress = getAddress(longitude, latitude);
+
+                // Display the full address in search view
+                searchView.setQuery(curAddress, false);
             }
         });
     }
@@ -127,7 +135,8 @@ public class LocationPicker implements OnMapReadyCallback, ActivityCompat.OnRequ
 
         else
         {
-            Toast.makeText(fragmentActivity, "Cần location permission để chạy", Toast.LENGTH_SHORT).show();
+            // Permission denied
+            Toast.makeText(fragmentActivity, "Cần quyền truy cập vị trí để tiếp tục", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -135,11 +144,14 @@ public class LocationPicker implements OnMapReadyCallback, ActivityCompat.OnRequ
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                // Press enter after typing
+                // Get the full address from search view
                 String locationStr = searchView.getQuery().toString();
                 List<Address> addressList = null;
 
                 if (locationStr != null)
                 {
+                    // Use Geocoder to get the latitude and longitude from the full address
                     Geocoder geocoder = new Geocoder(fragmentActivity);
 
                     try
@@ -154,16 +166,20 @@ public class LocationPicker implements OnMapReadyCallback, ActivityCompat.OnRequ
 
                     Address address = addressList.get(0);
 
+                    // Create new latlng from latitude and longitude
                     LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
 
+                    // Remove the previous marker if exists
                     if (currentMarker != null)
                     {
                         currentMarker.remove();
                     }
 
+                    // Create new marker and zoom camera to the location
                     currentMarker = myMap.addMarker(new MarkerOptions().position(latLng).title("Current Location"));
                     myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,  10));
 
+                    // Get the current full address
                     curAddress = "";
                     getAddress(latLng.longitude, latLng.latitude);
                 }
@@ -185,6 +201,7 @@ public class LocationPicker implements OnMapReadyCallback, ActivityCompat.OnRequ
                 ActivityCompat.checkSelfPermission(fragmentActivity.getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION)
                         == PackageManager.PERMISSION_GRANTED) {
             // Permission granted
+            // Get the current location based on gps
             fusedLocationProviderClient.getLastLocation()
                     .addOnSuccessListener(location -> {
                         if (location != null) {
@@ -192,10 +209,16 @@ public class LocationPicker implements OnMapReadyCallback, ActivityCompat.OnRequ
                             Double longitude = location.getLongitude();
 
                             LatLng currentLocation = new LatLng(latitude, longitude);
+
+                            // Add the marker and move camera, zoom 10
                             currentMarker = myMap.addMarker(new MarkerOptions().position(currentLocation).title("Current Location"));
                             myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation,  10));
 
+                            // Get the current full address
                             curAddress = getAddress(longitude, latitude);
+
+                            // Show the full address in the search view
+                            searchView.setQuery(curAddress, false);
                         }
                     });
         }
@@ -249,15 +272,18 @@ public class LocationPicker implements OnMapReadyCallback, ActivityCompat.OnRequ
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Get the confirmed address
                 if (confirmationListener != null)
                 {
                     confirmationListener.onLocationConfirmed(curAddress);
                 }
 
+                // Destroy map manager
                 if (supportMapFragment != null) {
                     fragmentActivity.getSupportFragmentManager().beginTransaction().remove(supportMapFragment).commit();
                 }
 
+                // Dismiss the dialog
                 alertDialog.dismiss();
             }
         });
