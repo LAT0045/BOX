@@ -37,4 +37,9 @@
     <string name="notification">Thông báo</string>
     <string name="account">Tài khoản</string>
 
+    <string name="account_info">Thông tin cá nhân</string>
+    <string name="buy">Mua lại</string>
+    <string name="sale">Ưu đãi</string>
+    <string name="payment">Thanh toán</string>
+    <string name="logout">Thoát</string>
 </resources>

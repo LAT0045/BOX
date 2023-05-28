@@ -5,16 +5,16 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import androidx.fragment.app.Fragment;
 
 import com.facebook.login.LoginManager;
-import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class AccountFragment extends Fragment {
     private View view;
-    private MaterialButton placeholderButton;
+    private RelativeLayout logoutButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -31,11 +31,11 @@ public class AccountFragment extends Fragment {
     }
 
     private void initializeUI() {
-        placeholderButton = (MaterialButton) view.findViewById(R.id.placeholder_button);
+        logoutButton = (RelativeLayout) view.findViewById(R.id.logout_button);
     }
 
     private void logOut() {
-        placeholderButton.setOnClickListener(new View.OnClickListener() {
+        logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 LoginManager.getInstance().logOut();

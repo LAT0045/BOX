@@ -15,7 +15,7 @@
         android:layout_marginTop="@dimen/_50sdp"/>
 
     <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/sdt"
+        android:id="@+id/email_edit_text"
         android:layout_width="@dimen/_230sdp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_40sdp"
@@ -26,6 +26,7 @@
         android:fontFamily="@font/comfortaa_variablefont_wght"/>
 
     <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/password_edit_text"
         android:layout_width="@dimen/_230sdp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_20sdp"
@@ -45,6 +46,7 @@
         android:layout_marginStart="@dimen/_2sdp"/>
 
     <RelativeLayout
+        android:id="@+id/sign_in_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_20sdp">

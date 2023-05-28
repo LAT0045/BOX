@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -111,6 +110,25 @@ public class UpdateFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == IMG_REQUEST_CODE)
+        {
+            // Permission accepted
+            selectImage();
+        }
+
+        else
+        {
+            // Permission denied
+            Toast.makeText(getActivity(), "Cần quyền truy cập hình ảnh để cập nhật ảnh đại diện",
+                    Toast.LENGTH_SHORT)
+                    .show();
+        }
+    }
+
     private void initializeUI() {
         nameEditText = (AppCompatEditText) view.findViewById(R.id.name_edit_text);
         addressEditText = (AppCompatEditText) view.findViewById(R.id.address_edit_text);
@@ -135,9 +153,8 @@ public class UpdateFragment extends Fragment {
         addressEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("TEST MAP", "BEFORE SHOWING MAP");
-
-                LocationPicker locationPicker = new LocationPicker(getActivity(), new LocationPicker.LocationConfirmationListener() {
+                LocationPicker locationPicker = new LocationPicker(getActivity(),
+                        new LocationPicker.LocationConfirmationListener() {
                     @Override
                     public void onLocationConfirmed(String address) {
                         addressEditText.setText(address);
@@ -162,13 +179,14 @@ public class UpdateFragment extends Fragment {
                 android.Manifest.permission.READ_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED)
         {
-            //If has permission then select image
+            // Permission is granted
             selectImage();
         }
 
         else
         {
-            //Ask for permission
+            // Permission not granted
+            // Ask for permission
             ActivityCompat.requestPermissions(getActivity(), new String[] {
                     android.Manifest.permission.READ_EXTERNAL_STORAGE
             }, IMG_REQUEST_CODE);
@@ -210,7 +228,7 @@ public class UpdateFragment extends Fragment {
                                 fragmentTransaction();
                             }
 
-                            else
+                            else if (output.equals("NO"))
                             {
                                 Toast.makeText(getContext(), "Lỗi đăng ký", Toast.LENGTH_SHORT)
                                         .show();

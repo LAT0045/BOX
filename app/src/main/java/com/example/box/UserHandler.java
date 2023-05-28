@@ -16,8 +16,9 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 public class UserHandler extends AsyncTask<String, Void, String> {
-    public static String TYPE_SIGN_UP_GOOGLE = "Sign Up Google";
-    public static String TYPE_SIGN_UP_EMAIL = "Sign Up Email";
+    public static final String TYPE_SIGN_UP_GOOGLE = "Sign Up Google";
+    public static final String TYPE_SIGN_UP_EMAIL = "Sign Up Email";
+    public static final String TYPE_GET_USER_INFO = "Get User Info";
 
     private AsyncResponse asyncResponse;
 
@@ -76,6 +77,13 @@ public class UserHandler extends AsyncTask<String, Void, String> {
                         + URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode(name, "UTF-8")
                         + "&"
                         + URLEncoder.encode("avatar", "UTF-8") + "=" + URLEncoder.encode(avatar, "UTF-8");
+            }
+
+            else if (type.equals(TYPE_GET_USER_INFO))
+            {
+                String id = strings[2];
+
+                data = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(id, "UTF-8");
             }
 
             bufferedWriter.write(data);

@@ -67,6 +67,7 @@
             />
 
         <ImageView
+            android:id="@+id/location_more_button"
             android:layout_width="@dimen/_15sdp"
             android:layout_height="@dimen/_15sdp"
             android:background="@drawable/btn_back"
