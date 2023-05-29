@@ -42,4 +42,10 @@
     <string name="sale">Ưu đãi</string>
     <string name="payment">Thanh toán</string>
     <string name="logout">Thoát</string>
+
+    <string name="name">Họ tên:</string>
+    <string name="password">Mật khẩu:</string>
+    <string name="phone">Số điện thoại:</string>
+    <string name="address_edit">Địa chỉ:</string>
+    <string name="save">Lưu</string>
 </resources>

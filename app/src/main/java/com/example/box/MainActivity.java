@@ -7,7 +7,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Parcelable;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -43,7 +43,6 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -53,7 +52,6 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
     private final String IPStr = "192.168.1.6";
     private final int LOCATION_REQUEST_CODE = 100;
-    private User user;
 
     private TextView signUpBtn;
     private LinearLayout facebookBtn;
@@ -70,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
 
     private FusedLocationProviderClient fusedLocationProviderClient;
 
+    private LoadingDialog loadingDialog;
+
     private String id = "";
     private String name = "";
     private String currentAddress = "";
@@ -83,9 +83,6 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         if (mAuth.getCurrentUser() != null) {
-            // Get the current user information from id
-            getUser(mAuth.getUid());
-
             //User is already logged in
             loadHomePage();
         }
@@ -115,6 +112,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize UI
         initializeUI();
+
+        // Initialize loading dialog
+        loadingDialog = new LoadingDialog(this);
 
         // Click sign up button
         clickSignUpBtn();
@@ -160,22 +160,6 @@ public class MainActivity extends AppCompatActivity {
 
         emailEditText = (AppCompatEditText) findViewById(R.id.email_edit_text);
         passwordEditText = (AppCompatEditText) findViewById(R.id.password_edit_text);
-    }
-
-    private void getUser(String id) {
-        String urlStr = "http://" + IPStr + "/box/getUser.php";
-
-        UserHandler userHandler = new UserHandler(new AsyncResponse() {
-            @Override
-            public void processFinish(String output) {
-                if (!output.equals("NO"))
-                {
-                    Gson gson = new Gson();
-                    user = gson.fromJson(output, User.class);
-                }
-            }
-        });
-        userHandler.execute(UserHandler.TYPE_GET_USER_INFO, urlStr, id);
     }
 
     private void clickFacebookBtn() {
@@ -232,7 +216,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void clickGoogleBtn() {
-        googleBtn.setOnClickListener(v -> configureGoogleLogIn());
+        googleBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                configureGoogleLogIn();
+            }
+        });
     }
 
     private void configureGoogleLogIn() {
@@ -257,10 +246,10 @@ public class MainActivity extends AppCompatActivity {
                     if (task.isSuccessful())
                     {
                         // Sign in success, update UI with the signed-in user's information
-                        FirebaseUser user = mAuth.getCurrentUser();
+                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
 
                         // Get userID, name
-                        id = user.getUid();
+                        id = firebaseUser.getUid();
                         name = googleSignInAccount.getDisplayName();
 
                         // Save the user information to MySQL
@@ -293,17 +282,14 @@ public class MainActivity extends AppCompatActivity {
                             String urlStr = "http://" + IPStr + "/box/signUp.php";
 
                             UserHandler userHandler = new UserHandler(output -> {
-                                if (output.equals("YES"))
+                                Log.d("ID HASHED IN MAIN ACTIVITY", output);
+                                if (!output.equals("NO"))
                                 {
-                                    // Save user successfully
-                                    // Create new user
-                                    user = new User(currentAddress, "", name, "");
-
-                                    // Load the home page and send user
+                                    // Load the home page
                                     loadHomePage();
                                 }
 
-                                else if (output.equals("NO"))
+                                else
                                 {
                                     Toast.makeText(MainActivity.this, "Lỗi đăng nhập", Toast.LENGTH_SHORT)
                                             .show();
@@ -364,12 +350,6 @@ public class MainActivity extends AppCompatActivity {
         return res;
     }
 
-    private void loadHomePage() {
-        Intent intent = new Intent(MainActivity.this, Home.class);
-        intent.putExtra("user", (Parcelable) user);
-        startActivity(intent);
-    }
-
     private void clickSignUpBtn() {
         signUpBtn.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, SignUp.class);
@@ -386,16 +366,20 @@ public class MainActivity extends AppCompatActivity {
 
                 if (!isEmptyInput(email, password))
                 {
+                    // Start loading screen
+                    loadingDialog.startLoadingAlertDialog();
+
+                    // Check if email and password are correct
                     mAuth.signInWithEmailAndPassword(email, password)
                             .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
+                                    // Done checking, stop loading screen
+                                    loadingDialog.endLoadingAlertDialog();
+
                                     if (task.isSuccessful())
                                     {
                                         // Sign in successfully
-                                        // Get user information
-                                        getUser(mAuth.getUid());
-
                                         // Load home page
                                         loadHomePage();
                                     }
@@ -413,6 +397,11 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void loadHomePage() {
+        Intent intent = new Intent(MainActivity.this, Home.class);
+        startActivity(intent);
     }
 
     private boolean isEmptyInput(String email, String password) {

@@ -10,10 +10,14 @@ import android.widget.RelativeLayout;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 public class CongratulationFragment extends Fragment {
     private View view;
     private FragmentManager fragmentManager;
+
+    private User curUser;
 
     private ImageView backBtn;
     private RelativeLayout startButton;
@@ -26,6 +30,17 @@ public class CongratulationFragment extends Fragment {
 
         // Initialize UI
         initializeUI();
+
+        // Get user object from shared view model
+        SharedViewModel sharedViewModel = new ViewModelProvider(requireActivity())
+                .get(SharedViewModel.class);
+        sharedViewModel.getUser().observe(getViewLifecycleOwner(), new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                curUser = user;
+            }
+        });
+
 
         // Get fragment manager
         fragmentManager = getActivity().getSupportFragmentManager();
