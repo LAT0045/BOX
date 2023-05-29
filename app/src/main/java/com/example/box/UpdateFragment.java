@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -54,6 +56,8 @@ public class UpdateFragment extends Fragment {
     private FirebaseStorage firebaseStorage;
     private FirebaseAuth firebaseAuth;
 
+    private LoadingDialog loadingDialog;
+
     private ImageView backBtn;
     private RelativeLayout updateBtn;
 
@@ -77,6 +81,9 @@ public class UpdateFragment extends Fragment {
 
         // Get email and password from previous fragment
         getEmailPassword();
+
+        // Initialize loading dialog
+        loadingDialog = new LoadingDialog(requireActivity());
 
         // Activity launcher for selecting image
         activityResultLauncher = registerForActivityResult(
@@ -225,6 +232,20 @@ public class UpdateFragment extends Fragment {
                         UserHandler userHandler = new UserHandler(output -> {
                             if (output.equals("YES"))
                             {
+                                // Create new user to pass it to the next fragment
+                                User user = new User(address, "", name, imageStr);
+
+                                Log.d("TEST SHOW INFO IN UPDATE", user.getName());
+
+                                // Put it in SharedViewModel in order to share it between fragments
+                                SharedViewModel sharedViewModel = new ViewModelProvider(requireActivity())
+                                        .get(SharedViewModel.class);
+                                sharedViewModel.setUser(user);
+
+                                // Stop loading screen before moving to next fragment
+                                loadingDialog.endLoadingAlertDialog();
+
+                                // Load the congratulation fragment
                                 fragmentTransaction();
                             }
 
@@ -234,7 +255,6 @@ public class UpdateFragment extends Fragment {
                                         .show();
                             }
                         });
-
 
                         userHandler.execute(UserHandler.TYPE_SIGN_UP_EMAIL, urlStr, userID, address,
                                 name, imageStr);
@@ -269,6 +289,9 @@ public class UpdateFragment extends Fragment {
 
                 if (!isEmptyEditText(name, address))
                 {
+                    // Show loading screen
+                    loadingDialog.startLoadingAlertDialog();
+
                     // Create new user
                     createNewUser(name, address);
                 }
