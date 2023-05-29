@@ -1,22 +1,25 @@
 package com.example.box;
 
 import android.Manifest;
-
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.core.app.ActivityCompat;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -31,13 +34,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.CancellationToken;
-import com.google.android.gms.tasks.CancellationTokenSource;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -50,10 +51,15 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     private final String IPStr = "192.168.1.6";
+    private final int LOCATION_REQUEST_CODE = 100;
 
     private TextView signUpBtn;
     private LinearLayout facebookBtn;
     private LinearLayout googleBtn;
+    private RelativeLayout signInButton;
+
+    private AppCompatEditText emailEditText;
+    private AppCompatEditText passwordEditText;
 
     private FirebaseAuth mAuth;
     private CallbackManager mCallbackManager;
@@ -61,7 +67,9 @@ public class MainActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> activityResultLauncher;
 
     private FusedLocationProviderClient fusedLocationProviderClient;
-    private final int LOCATION_REQUEST_CODE = 100;
+
+    private LoadingDialog loadingDialog;
+
     private String id = "";
     private String name = "";
     private String currentAddress = "";
@@ -79,16 +87,24 @@ public class MainActivity extends AppCompatActivity {
             loadHomePage();
         }
 
+        // Activity launcher for google sign in
         activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    Task<GoogleSignInAccount> task = GoogleSignIn
-                            .getSignedInAccountFromIntent(result.getData());
+                    if (result.getResultCode() != RESULT_CANCELED && result.getData() != null)
+                    {
+                        Task<GoogleSignInAccount> task = GoogleSignIn
+                                .getSignedInAccountFromIntent(result.getData());
 
-                    try {
-                        GoogleSignInAccount googleSignInAccount = task.getResult(ApiException.class);
-                        handleGoogleAccessToken(googleSignInAccount);
-                    } catch (ApiException e) {
-                        throw new RuntimeException(e);
+                        try
+                        {
+                            GoogleSignInAccount googleSignInAccount = task.getResult(ApiException.class);
+                            handleGoogleAccessToken(googleSignInAccount);
+                        }
+
+                        catch (ApiException e)
+                        {
+                            throw new RuntimeException(e);
+                        }
                     }
                 });
 
@@ -96,6 +112,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize UI
         initializeUI();
+
+        // Initialize loading dialog
+        loadingDialog = new LoadingDialog(this);
 
         // Click sign up button
         clickSignUpBtn();
@@ -105,6 +124,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Click google button
         clickGoogleBtn();
+
+        // Click sign in button
+        clickSignIn();
     }
 
     @Override
@@ -117,10 +139,16 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == LOCATION_REQUEST_CODE) {
+        if (requestCode == LOCATION_REQUEST_CODE)
+        {
             // Permission accepted
             saveUserInfo();
+        }
 
+        else
+        {
+            Toast.makeText(this, "Cần quyền truy cập vị trí để tiếp tục", Toast.LENGTH_SHORT)
+                    .show();
         }
     }
 
@@ -128,6 +156,10 @@ public class MainActivity extends AppCompatActivity {
         signUpBtn = (TextView) findViewById(R.id.sign_up_btn);
         facebookBtn = (LinearLayout) findViewById(R.id.facebook_btn);
         googleBtn = (LinearLayout) findViewById(R.id.google_btn);
+        signInButton = (RelativeLayout) findViewById(R.id.sign_in_button);
+
+        emailEditText = (AppCompatEditText) findViewById(R.id.email_edit_text);
+        passwordEditText = (AppCompatEditText) findViewById(R.id.password_edit_text);
     }
 
     private void clickFacebookBtn() {
@@ -173,6 +205,7 @@ public class MainActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         // Sign in success, update UI with the signed-in user's information
                         //FirebaseUser user = mAuth.getCurrentUser();
+                        // TODO: Implement save user's information for facebook user
                         loadHomePage();
                     } else {
                         // If sign in fails, display a message to the user.
@@ -183,7 +216,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void clickGoogleBtn() {
-        googleBtn.setOnClickListener(v -> configureGoogleLogIn());
+        googleBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                configureGoogleLogIn();
+            }
+        });
     }
 
     private void configureGoogleLogIn() {
@@ -205,17 +243,21 @@ public class MainActivity extends AppCompatActivity {
         AuthCredential firebaseCredential = GoogleAuthProvider.getCredential(idToken, null);
         mAuth.signInWithCredential(firebaseCredential)
                 .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
+                    if (task.isSuccessful())
+                    {
                         // Sign in success, update UI with the signed-in user's information
-                        FirebaseUser user = mAuth.getCurrentUser();
+                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
 
                         // Get userID, name
-                        id = user.getUid();
+                        id = firebaseUser.getUid();
                         name = googleSignInAccount.getDisplayName();
 
                         // Save the user information to MySQL
                         saveUserInfo();
-                    } else {
+                    }
+
+                    else
+                    {
                         // If sign in fails, display a message to the user.
                         Toast.makeText(MainActivity.this, "Fail to log in", Toast.LENGTH_SHORT)
                                 .show();
@@ -230,12 +272,8 @@ public class MainActivity extends AppCompatActivity {
                 == PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION)
                         == PackageManager.PERMISSION_GRANTED) {
-
-            CancellationTokenSource tokenSource = new CancellationTokenSource();
-            CancellationToken token = tokenSource.getToken();
-
             // Permission granted
-            fusedLocationProviderClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, token)
+            fusedLocationProviderClient.getLastLocation()
                     .addOnSuccessListener(location -> {
                         if (location != null) {
                             currentAddress = getAddress(location);
@@ -244,19 +282,29 @@ public class MainActivity extends AppCompatActivity {
                             String urlStr = "http://" + IPStr + "/box/signUp.php";
 
                             UserHandler userHandler = new UserHandler(output -> {
-                                // Do whatever with output here
+                                Log.d("ID HASHED IN MAIN ACTIVITY", output);
+                                if (!output.equals("NO"))
+                                {
+                                    // Load the home page
+                                    loadHomePage();
+                                }
+
+                                else
+                                {
+                                    Toast.makeText(MainActivity.this, "Lỗi đăng nhập", Toast.LENGTH_SHORT)
+                                            .show();
+                                }
                             });
 
 
-                            userHandler.execute(UserHandler.TYPE_SIGN_UP, urlStr, id, currentAddress, name);
-
-                            // Load the home page
-                            loadHomePage();
+                            userHandler.execute(UserHandler.TYPE_SIGN_UP_GOOGLE, urlStr, id, currentAddress, name);
                         }
                     });
-        } else {
-            // Permission not granted
+        }
 
+        else
+        {
+            // Permission not granted
             requestPermission();
         }
     }
@@ -302,16 +350,73 @@ public class MainActivity extends AppCompatActivity {
         return res;
     }
 
-    private void loadHomePage() {
-        Intent intent = new Intent(MainActivity.this, Home.class);
-        intent.putExtra("Address", currentAddress);
-        startActivity(intent);
-    }
-
     private void clickSignUpBtn() {
         signUpBtn.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, SignUp.class);
             startActivity(intent);
         });
+    }
+
+    private void clickSignIn() {
+        signInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String email = emailEditText.getText().toString().trim();
+                String password = passwordEditText.getText().toString();
+
+                if (!isEmptyInput(email, password))
+                {
+                    // Start loading screen
+                    loadingDialog.startLoadingAlertDialog();
+
+                    // Check if email and password are correct
+                    mAuth.signInWithEmailAndPassword(email, password)
+                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    // Done checking, stop loading screen
+                                    loadingDialog.endLoadingAlertDialog();
+
+                                    if (task.isSuccessful())
+                                    {
+                                        // Sign in successfully
+                                        // Load home page
+                                        loadHomePage();
+                                    }
+
+                                    else
+                                    {
+                                        // Fail to sign in
+                                        Toast.makeText(MainActivity.this,
+                                                "Email hoặc mật khẩu sai",
+                                                Toast.LENGTH_SHORT)
+                                                .show();
+                                    }
+                                }
+                            });
+                }
+            }
+        });
+    }
+
+    private void loadHomePage() {
+        Intent intent = new Intent(MainActivity.this, Home.class);
+        startActivity(intent);
+    }
+
+    private boolean isEmptyInput(String email, String password) {
+        if (email.isEmpty())
+        {
+            emailEditText.setError("Email không thể để trống");
+            return true;
+        }
+
+        else if (password.isEmpty())
+        {
+            passwordEditText.setError("Mật khẩu không thể để trống");
+            return true;
+        }
+
+        return false;
     }
 }

@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">BOX</string>
-    <string name="hint_user">SĐT</string>
+    <string name="hint_user">Email</string>
     <string name="hint_pass">Mật Khẩu</string>
     <string name="forget_pass">Quên Mật Khẩu?</string>
     <string name="btn_login">Đăng Nhập</string>
@@ -19,6 +19,7 @@
     <string name="avatar">Hình đại diện</string>
     <string name="btn_select_img">Chọn ảnh</string>
     <string name="btn_update">Cập nhật</string>
+    <string name="address">Nhập địa chỉ</string>
 
     <string name="congratulation">Chúc mừng bạn đã đăng ký tài khoản thành công. Bây giờ chúng ta cùng trải nghiệm BOX nào</string>
     <string name="btn_start">Bắt đầu thôi</string>
@@ -28,6 +29,7 @@
 
     <string name="facebook_app_id">1418588802292677</string>
     <string name="facebook_client_token">ea744160e94a86857cead716506d0c86</string>
+    <string name="map_api_key">AIzaSyBknGDde114KjDnfMDtw3u4TGx2NOmMCAI</string>
 
     <string name="home">Home</string>
     <string name="favorite">Yêu thích</string>
@@ -35,4 +37,15 @@
     <string name="notification">Thông báo</string>
     <string name="account">Tài khoản</string>
 
+    <string name="account_info">Thông tin cá nhân</string>
+    <string name="buy">Mua lại</string>
+    <string name="sale">Ưu đãi</string>
+    <string name="payment">Thanh toán</string>
+    <string name="logout">Thoát</string>
+
+    <string name="name">Họ tên:</string>
+    <string name="password">Mật khẩu:</string>
+    <string name="phone">Số điện thoại:</string>
+    <string name="address_edit">Địa chỉ:</string>
+    <string name="save">Lưu</string>
 </resources>

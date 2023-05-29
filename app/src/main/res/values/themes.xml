@@ -19,4 +19,8 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>
+
+    <style name="Theme.BOX.DarkSearchViewTheme">
+        <item name="colorControlNormal">@color/orange</item>
+    </style>
 </resources>

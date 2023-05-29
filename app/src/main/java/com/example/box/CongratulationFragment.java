@@ -1,20 +1,26 @@
 package com.example.box;
 
+import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 public class CongratulationFragment extends Fragment {
     private View view;
     private FragmentManager fragmentManager;
 
+    private User curUser;
+
     private ImageView backBtn;
+    private RelativeLayout startButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -25,8 +31,22 @@ public class CongratulationFragment extends Fragment {
         // Initialize UI
         initializeUI();
 
+        // Get user object from shared view model
+        SharedViewModel sharedViewModel = new ViewModelProvider(requireActivity())
+                .get(SharedViewModel.class);
+        sharedViewModel.getUser().observe(getViewLifecycleOwner(), new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                curUser = user;
+            }
+        });
+
+
         // Get fragment manager
         fragmentManager = getActivity().getSupportFragmentManager();
+
+        // Click start button
+        clickStart();
 
         // Click back button
         clickBack();
@@ -36,6 +56,17 @@ public class CongratulationFragment extends Fragment {
 
     private void initializeUI() {
         backBtn = view.findViewById(R.id.btn_back);
+        startButton = view.findViewById(R.id.start_button);
+    }
+
+    private void clickStart() {
+        startButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), Home.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void clickBack() {

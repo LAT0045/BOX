@@ -2,7 +2,6 @@ package com.example.box;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -17,7 +16,9 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 public class UserHandler extends AsyncTask<String, Void, String> {
-    public static String TYPE_SIGN_UP = "Sign Up";
+    public static final String TYPE_SIGN_UP_GOOGLE = "Sign Up Google";
+    public static final String TYPE_SIGN_UP_EMAIL = "Sign Up Email";
+    public static final String TYPE_GET_USER_INFO = "Get User Info";
 
     private AsyncResponse asyncResponse;
 
@@ -29,9 +30,6 @@ public class UserHandler extends AsyncTask<String, Void, String> {
     protected String doInBackground(String... strings) {
         String type = strings[0];
         String urlStr = strings[1];
-        String id = strings[2];
-        String address = strings[3];
-        String name = strings[4];
 
         try
         {
@@ -52,13 +50,40 @@ public class UserHandler extends AsyncTask<String, Void, String> {
             //Send data
             String data = "";
 
-            if (type.equals(TYPE_SIGN_UP))
+            if (type.equals(TYPE_SIGN_UP_GOOGLE))
             {
+                String id = strings[2];
+                String address = strings[3];
+                String name = strings[4];
+
                 data = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(id, "UTF-8")
                         + "&"
                         + URLEncoder.encode("address", "UTF-8") + "=" + URLEncoder.encode(address, "UTF-8")
                         + "&"
                         + URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode(name, "UTF-8");
+            }
+
+            else if (type.equals(TYPE_SIGN_UP_EMAIL))
+            {
+                String id = strings[2];
+                String address = strings[3];
+                String name = strings[4];
+                String avatar = strings[5];
+
+                data = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(id, "UTF-8")
+                        + "&"
+                        + URLEncoder.encode("address", "UTF-8") + "=" + URLEncoder.encode(address, "UTF-8")
+                        + "&"
+                        + URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode(name, "UTF-8")
+                        + "&"
+                        + URLEncoder.encode("avatar", "UTF-8") + "=" + URLEncoder.encode(avatar, "UTF-8");
+            }
+
+            else if (type.equals(TYPE_GET_USER_INFO))
+            {
+                String id = strings[2];
+
+                data = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(id, "UTF-8");
             }
 
             bufferedWriter.write(data);
