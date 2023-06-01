@@ -11,7 +11,6 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.box.Entity.AsyncResponse;
@@ -19,10 +18,9 @@ import com.example.box.Entity.Category;
 import com.example.box.Entity.CategoryAdapter;
 import com.example.box.Entity.LocationPicker;
 import com.example.box.Entity.Product;
-import com.example.box.Entity.ProductAdapter;
-import com.example.box.R;
 import com.example.box.Entity.User;
 import com.example.box.Entity.UserHandler;
+import com.example.box.R;
 import com.google.firebase.auth.FirebaseAuth;
 
 import org.json.JSONArray;
@@ -186,7 +184,7 @@ public class HomeFragment extends Fragment {
         categoryList.add(categoryTest);
         categoryList.add(categoryTest);
         CategoryAdapter categoryAdapter1 = new CategoryAdapter(requireContext(), productList, categoryList);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(requireActivity(), 1, GridLayoutManager.HORIZONTAL, false );
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(requireActivity(), 1, GridLayoutManager.VERTICAL, false );
         categoryRCV.setLayoutManager(gridLayoutManager);
         categoryRCV.setAdapter(categoryAdapter1);
     }
