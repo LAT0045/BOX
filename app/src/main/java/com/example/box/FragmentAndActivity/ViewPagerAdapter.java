@@ -1,9 +1,15 @@
-package com.example.box;
+package com.example.box.FragmentAndActivity;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
+
+import com.example.box.FragmentAndActivity.AccountFragment;
+import com.example.box.FragmentAndActivity.FavoriteFragment;
+import com.example.box.FragmentAndActivity.HomeFragment;
+import com.example.box.FragmentAndActivity.NotificationFragment;
+import com.example.box.FragmentAndActivity.OrderFragment;
 
 public class ViewPagerAdapter extends FragmentStateAdapter {
     public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity) {

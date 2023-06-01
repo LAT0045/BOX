@@ -1,4 +1,4 @@
-package com.example.box;
+package com.example.box.Entity;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -15,6 +15,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import com.example.box.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;

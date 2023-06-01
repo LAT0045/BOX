@@ -1,4 +1,4 @@
-package com.example.box;
+package com.example.box.FragmentAndActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +12,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+
+import com.example.box.R;
+import com.example.box.Entity.User;
 
 public class CongratulationFragment extends Fragment {
     private View view;

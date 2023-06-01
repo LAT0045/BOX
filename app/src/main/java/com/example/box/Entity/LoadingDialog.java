@@ -1,9 +1,11 @@
-package com.example.box;
+package com.example.box.Entity;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
 
 import androidx.appcompat.app.AlertDialog;
+
+import com.example.box.R;
 
 public class LoadingDialog {
     private Activity activity;

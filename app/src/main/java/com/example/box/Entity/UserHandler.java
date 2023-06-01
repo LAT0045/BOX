@@ -1,4 +1,4 @@
-package com.example.box;
+package com.example.box.Entity;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -19,6 +19,7 @@ public class UserHandler extends AsyncTask<String, Void, String> {
     public static final String TYPE_SIGN_UP_GOOGLE = "Sign Up Google";
     public static final String TYPE_SIGN_UP_EMAIL = "Sign Up Email";
     public static final String TYPE_GET_USER_INFO = "Get User Info";
+    public final String IP = "http://192.168.1.10";
 
     private AsyncResponse asyncResponse;
 
@@ -29,7 +30,7 @@ public class UserHandler extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... strings) {
         String type = strings[0];
-        String urlStr = strings[1];
+        String urlStr = IP + strings[1];
 
         try
         {

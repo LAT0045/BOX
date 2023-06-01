@@ -1,8 +1,10 @@
-package com.example.box;
+package com.example.box.FragmentAndActivity;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+
+import com.example.box.Entity.User;
 
 public class SharedViewModel extends ViewModel {
     private MutableLiveData<User> user = new MutableLiveData<>();
