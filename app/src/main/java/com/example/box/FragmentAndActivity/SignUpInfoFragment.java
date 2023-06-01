@@ -1,4 +1,4 @@
-package com.example.box;
+package com.example.box.FragmentAndActivity;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,6 +13,7 @@ import androidx.appcompat.widget.AppCompatEditText;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.example.box.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -68,7 +69,6 @@ public class SignUpInfoFragment extends Fragment {
                 String email = emailEditText.getText().toString().trim();
                 String password = passwordEditText.getText().toString();
                 String reEnterPassword = reEnterPasswordEditText.getText().toString();
-
                 if (!isEmptyInput(email, password, reEnterPassword) && isValidEmail(email) &&
                         isValidPassword(password) && isSamePassword(password, reEnterPassword))
                 {

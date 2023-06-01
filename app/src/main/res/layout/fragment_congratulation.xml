@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    tools:context=".CongratulationFragment">
+    tools:context=".FragmentAndActivity.CongratulationFragment">
     <ImageView
         android:id="@+id/btn_back"
         android:layout_width="@dimen/_30sdp"

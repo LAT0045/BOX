@@ -1,10 +1,11 @@
-package com.example.box;
+package com.example.box.FragmentAndActivity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Bundle;
 
+import com.example.box.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class Home extends AppCompatActivity {
@@ -20,7 +21,7 @@ public class Home extends AppCompatActivity {
         initializeUI();
 
         //Set up view pager
-        setUpViewPager();
+        //setUpViewPager();
 
         //Select icon in bottom navigation
         selectOption();

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".HomeFragment">
+    tools:context=".FragmentAndActivity.HomeFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -56,7 +56,7 @@
 
         <TextView
             android:id="@+id/location_text"
-            android:layout_width="@dimen/_280sdp"
+            android:layout_width="@dimen/_260sdp"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
@@ -75,5 +75,18 @@
             android:backgroundTint="@color/orange"/>
 
     </LinearLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_130sdp"
+        android:background="@color/gray"
+        android:layout_marginTop="@dimen/_10sdp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/category_rcv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+`
 
 </LinearLayout>

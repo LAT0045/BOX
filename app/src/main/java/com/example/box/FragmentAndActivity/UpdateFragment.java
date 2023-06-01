@@ -1,4 +1,4 @@
-package com.example.box;
+package com.example.box.FragmentAndActivity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -24,6 +24,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.box.Entity.LoadingDialog;
+import com.example.box.Entity.LocationPicker;
+import com.example.box.R;
+import com.example.box.Entity.User;
+import com.example.box.Entity.UserHandler;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -37,7 +42,6 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 public class UpdateFragment extends Fragment {
-    private final String IPStr = "192.168.1.6";
     private final int IMG_REQUEST_CODE = 103;
     private View view;
     private FragmentManager fragmentManager;
@@ -227,7 +231,7 @@ public class UpdateFragment extends Fragment {
                         String userID = firebaseUser.getUid();
 
                         // Save information to MySQL
-                        String urlStr = "http://" + IPStr + "/box/signUpEmail.php";
+                        String urlStr = "/box/signUpEmail.php";
 
                         UserHandler userHandler = new UserHandler(output -> {
                             if (output.equals("YES"))

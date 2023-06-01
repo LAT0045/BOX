@@ -1,4 +1,4 @@
-package com.example.box;
+package com.example.box.FragmentAndActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +16,8 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.box.R;
+import com.example.box.Entity.User;
 import com.facebook.login.LoginManager;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;

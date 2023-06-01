@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    tools:context=".EditFragment">
+    tools:context=".FragmentAndActivity.EditFragment">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/_30sdp"

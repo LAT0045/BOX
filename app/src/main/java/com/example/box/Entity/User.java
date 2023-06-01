@@ -1,4 +1,4 @@
-package com.example.box;
+package com.example.box.Entity;
 
 public class User {
     private String address;

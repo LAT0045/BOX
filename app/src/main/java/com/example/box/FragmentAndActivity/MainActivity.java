@@ -1,4 +1,4 @@
-package com.example.box;
+package com.example.box.FragmentAndActivity;
 
 import android.Manifest;
 import android.content.Intent;
@@ -21,6 +21,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.core.app.ActivityCompat;
 
+import com.example.box.Entity.LoadingDialog;
+import com.example.box.R;
+import com.example.box.Entity.UserHandler;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -50,7 +53,6 @@ import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-    private final String IPStr = "192.168.1.6";
     private final int LOCATION_REQUEST_CODE = 100;
 
     private TextView signUpBtn;
@@ -164,7 +166,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void clickFacebookBtn() {
         mCallbackManager = CallbackManager.Factory.create();
-
         facebookBtn.setOnClickListener(view -> {
             FacebookSdk.setApplicationId("1418588802292677");
             FacebookSdk.setClientToken("ea744160e94a86857cead716506d0c86");
@@ -173,7 +174,6 @@ public class MainActivity extends AppCompatActivity {
 
             LoginManager.getInstance()
                     .logInWithReadPermissions(MainActivity.this, Arrays.asList("email", "public_profile"));
-
             LoginManager.getInstance().registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
                 @Override
                 public void onSuccess(LoginResult loginResult) {
@@ -199,7 +199,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void handleFacebookAccessToken(AccessToken token) {
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
-
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
@@ -279,7 +278,7 @@ public class MainActivity extends AppCompatActivity {
                             currentAddress = getAddress(location);
 
                             // Save information to MySQL
-                            String urlStr = "http://" + IPStr + "/box/signUp.php";
+                            String urlStr = "/box/signUp.php";
 
                             UserHandler userHandler = new UserHandler(output -> {
                                 Log.d("ID HASHED IN MAIN ACTIVITY", output);

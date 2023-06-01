@@ -11,6 +11,8 @@
     <color name="orange">#FA6400</color>
     <color name="light_gray">#FAFAFA</color>
     <color name="blue">#3866C0</color>
+    <color name="border_color">#ECECEC</color>
+    <color name="card_color">#F7F7F7</color>
 
 
 </resources>

@@ -37,13 +37,13 @@
             android:value="@string/map_api_key"/>
 
         <activity
-            android:name="com.example.box.Home"
+            android:name="com.example.box.FragmentAndActivity.Home"
             android:exported="false" />
         <activity
-            android:name="com.example.box.SignUp"
+            android:name="com.example.box.FragmentAndActivity.SignUp"
             android:exported="false" />
         <activity
-            android:name="com.example.box.MainActivity"
+            android:name="com.example.box.FragmentAndActivity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
