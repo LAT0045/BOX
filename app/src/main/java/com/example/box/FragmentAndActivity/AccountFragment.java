@@ -120,7 +120,7 @@ public class AccountFragment extends Fragment {
                 EditFragment editFragment = new EditFragment();
                 FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.view_pager, editFragment);
+                fragmentTransaction.replace(R.id.frame_layout, editFragment);
                 fragmentTransaction.addToBackStack(null); // Does not allow user to navigate back
                 fragmentTransaction.commit();
             }

@@ -19,7 +19,8 @@ public class UserHandler extends AsyncTask<String, Void, String> {
     public static final String TYPE_SIGN_UP_GOOGLE = "Sign Up Google";
     public static final String TYPE_SIGN_UP_EMAIL = "Sign Up Email";
     public static final String TYPE_GET_USER_INFO = "Get User Info";
-    public final String IP = "http://192.168.1.10";
+    //public final String IP = "http://192.168.1.10";
+    public final String IP = "http://192.168.1.6";
 
     private AsyncResponse asyncResponse;
 
