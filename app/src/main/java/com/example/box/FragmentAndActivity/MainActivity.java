@@ -23,7 +23,7 @@ import androidx.core.app.ActivityCompat;
 
 import com.example.box.Entity.LoadingDialog;
 import com.example.box.R;
-import com.example.box.Entity.UserHandler;
+import com.example.box.Entity.DataHandler;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -280,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
                             // Save information to MySQL
                             String urlStr = "/box/signUp.php";
 
-                            UserHandler userHandler = new UserHandler(output -> {
+                            DataHandler dataHandler = new DataHandler(output -> {
                                 Log.d("ID HASHED IN MAIN ACTIVITY", output);
                                 if (!output.equals("NO"))
                                 {
@@ -296,7 +296,7 @@ public class MainActivity extends AppCompatActivity {
                             });
 
 
-                            userHandler.execute(UserHandler.TYPE_SIGN_UP_GOOGLE, urlStr, id, currentAddress, name);
+                            dataHandler.execute(DataHandler.TYPE_SIGN_UP_GOOGLE, urlStr, id, currentAddress, name);
                         }
                     });
         }

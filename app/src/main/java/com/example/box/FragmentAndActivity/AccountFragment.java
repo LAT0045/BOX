@@ -2,7 +2,6 @@ package com.example.box.FragmentAndActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +15,8 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.box.R;
 import com.example.box.Entity.User;
+import com.example.box.R;
 import com.facebook.login.LoginManager;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -64,15 +63,12 @@ public class AccountFragment extends Fragment {
     }
 
     private void setUpInformation() {
-        Log.d("TEST SHOW INFO IN ACCOUNT", "IN GET INFORMATION");
         // Get user object from shared view model
         SharedViewModel sharedViewModel = new ViewModelProvider(requireActivity())
                 .get(SharedViewModel.class);
         sharedViewModel.getUser().observe(getViewLifecycleOwner(), new Observer<User>() {
             @Override
             public void onChanged(User user) {
-                Log.d("TEST SHOW INFO IN ACCOUNT", "BEFORE GET USER NAME");
-                Log.d("TEST SHOW INFO IN ACCOUNT", user.getName());
                 String name = user.getName();
                 String phoneNumber = user.getPhoneNumber();
                 String avatarUrl = user.getAvatar();
@@ -121,7 +117,7 @@ public class AccountFragment extends Fragment {
                 FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.frame_layout, editFragment);
-                fragmentTransaction.addToBackStack(null); // Does not allow user to navigate back
+                fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
             }
         });

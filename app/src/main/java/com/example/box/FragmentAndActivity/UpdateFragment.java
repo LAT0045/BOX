@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,9 +25,9 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.box.Entity.LoadingDialog;
 import com.example.box.Entity.LocationPicker;
-import com.example.box.R;
 import com.example.box.Entity.User;
-import com.example.box.Entity.UserHandler;
+import com.example.box.Entity.DataHandler;
+import com.example.box.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -164,7 +163,7 @@ public class UpdateFragment extends Fragment {
         addressEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LocationPicker locationPicker = new LocationPicker(getActivity(),
+                LocationPicker locationPicker = new LocationPicker(requireActivity(),
                         new LocationPicker.LocationConfirmationListener() {
                     @Override
                     public void onLocationConfirmed(String address) {
@@ -233,13 +232,11 @@ public class UpdateFragment extends Fragment {
                         // Save information to MySQL
                         String urlStr = "/box/signUpEmail.php";
 
-                        UserHandler userHandler = new UserHandler(output -> {
+                        DataHandler dataHandler = new DataHandler(output -> {
                             if (output.equals("YES"))
                             {
                                 // Create new user to pass it to the next fragment
                                 User user = new User(address, "", name, imageStr);
-
-                                Log.d("TEST SHOW INFO IN UPDATE", user.getName());
 
                                 // Put it in SharedViewModel in order to share it between fragments
                                 SharedViewModel sharedViewModel = new ViewModelProvider(requireActivity())
@@ -260,7 +257,7 @@ public class UpdateFragment extends Fragment {
                             }
                         });
 
-                        userHandler.execute(UserHandler.TYPE_SIGN_UP_EMAIL, urlStr, userID, address,
+                        dataHandler.execute(DataHandler.TYPE_SIGN_UP_EMAIL, urlStr, userID, address,
                                 name, imageStr);
                     }
                 });
