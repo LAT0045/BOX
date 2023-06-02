@@ -1,14 +1,15 @@
 package com.example.box.FragmentAndActivity;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,10 +17,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.box.Entity.AsyncResponse;
 import com.example.box.Entity.Category;
 import com.example.box.Entity.CategoryAdapter;
+import com.example.box.Entity.DataHandler;
+import com.example.box.Entity.LoadingDialog;
 import com.example.box.Entity.LocationPicker;
 import com.example.box.Entity.Product;
 import com.example.box.Entity.User;
-import com.example.box.Entity.UserHandler;
 import com.example.box.R;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -40,7 +42,7 @@ public class HomeFragment extends Fragment {
     private List<Product> productList;
     private List<Category> categoryList;
 
-
+    private LoadingDialog loadingDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,6 +53,9 @@ public class HomeFragment extends Fragment {
 
         // Initialize UI
         initializeUI();
+
+        // Initialize loading dialog
+        loadingDialog = new LoadingDialog(requireActivity());
 
         // Set up information
         setUpInformation();
@@ -72,61 +77,25 @@ public class HomeFragment extends Fragment {
     }
 
     private void setUpInformation() {
-        String urlStr = "/box/getUser.php";
+        // Get user object from shared view model
+        SharedViewModel sharedViewModel = new ViewModelProvider(requireActivity())
+                .get(SharedViewModel.class);
 
-        // Get current user id
-        String userId = FirebaseAuth.getInstance().getUid();
-        Log.d("IN HOME FRAGMET", userId);
-
-        UserHandler userHandler = new UserHandler(new AsyncResponse() {
+        sharedViewModel.getUser().observe(getViewLifecycleOwner(), new Observer<User>() {
             @Override
-            public void processFinish(String output) {
-                Log.d("HASHED ID IN HOME FRAGMENT", output);
-                if (!output.equals("NO"))
+            public void onChanged(User user) {
+                // Set up this user's location
+                if (!user.getAddress().isEmpty())
                 {
-                    try
-                    {
-                        JSONArray jsonArray = new JSONArray(output);
+                    locationText.setText(user.getAddress());
+                }
 
-                        // Iterate over the JSON array
-                        for (int i = 0; i < jsonArray.length(); i++)
-                        {
-                            JSONObject jsonObject = jsonArray.getJSONObject(i);
-
-                            // Map the values to your ClassA object
-                            String address = jsonObject.getString("diachi");
-                            String phoneNumber = jsonObject.getString("sodienthoai");
-                            String name = jsonObject.getString("tenkhachhang");
-                            String avatar = jsonObject.getString("anhdaidien");
-
-                            User user = new User(address, phoneNumber, name, avatar);
-
-                            // Put it in SharedViewModel in order to share it between fragments
-                            SharedViewModel sharedViewModel = new ViewModelProvider(requireActivity())
-                                    .get(SharedViewModel.class);
-                            sharedViewModel.setUser(user);
-
-                            // Set up this user's location
-                            if (!address.isEmpty())
-                            {
-                                locationText.setText(address);
-                            }
-
-                            else
-                            {
-                                locationText.setText("Chưa cập nhật địa chỉ");
-                            }
-                        }
-                    }
-
-                    catch (JSONException e)
-                    {
-                        throw new RuntimeException(e);
-                    }
+                else
+                {
+                    locationText.setText("Chưa cập nhật địa chỉ");
                 }
             }
         });
-        userHandler.execute(UserHandler.TYPE_GET_USER_INFO, urlStr, userId);
     }
 
     private void clickMore() {
@@ -137,12 +106,43 @@ public class HomeFragment extends Fragment {
                         new LocationPicker.LocationConfirmationListener() {
                             @Override
                             public void onLocationConfirmed(String address) {
-                                locationText.setText(address);
+                                // Start loading screen
+                                loadingDialog.startLoadingAlertDialog();
+
+                                // Update the address in MySQL
+                                updateAddress(address);
                             }
                         });
                 locationPicker.loadMap();
             }
         });
+    }
+
+    private void updateAddress(String address) {
+        String urlStr = "/box/updateUser.php";
+        String userId = FirebaseAuth.getInstance().getUid();
+
+        DataHandler dataHandler = new DataHandler(new AsyncResponse() {
+            @Override
+            public void processFinish(String output) {
+                if (output.equals("YES"))
+                {
+                    locationText.setText(address);
+                }
+
+                else
+                {
+                    Toast.makeText(requireContext(), "Lỗi cập nhật địa chỉ", Toast.LENGTH_SHORT)
+                            .show();
+                }
+
+                // Stop loading screen
+                loadingDialog.endLoadingAlertDialog();
+            }
+        });
+
+        dataHandler.execute(DataHandler.TYPE_UPDATE_USER_INFO, urlStr, userId,
+                DataHandler.TYPE_CHANGE_USER_ADDRESS, address);
     }
 
     private void getProductInfo() {
@@ -172,6 +172,7 @@ public class HomeFragment extends Fragment {
 
     private void test()
     {
+        categoryRCV.setNestedScrollingEnabled(false);
         productList = new ArrayList<>();
         categoryList = new ArrayList<>();
         Product product1 = new Product("https://firebasestorage.googleapis.com/v0/b/pbox-b4a17.appspot.com/o/Product_image%2FPMVQDX.jpg?alt=media&token=4512b551-884e-42dd-8667-df41d54bdb51&_gl=1*1wbqngr*_ga*MTk2MTAxOTE4OC4xNjgzMTgzMzAy*_ga_CW55HF8NVT*MTY4NTQzNzg0MC4xOC4xLjE2ODU0MzgyNTguMC4wLjA.", "Phô Mai Việt Quất Đá Xay", 10.99);

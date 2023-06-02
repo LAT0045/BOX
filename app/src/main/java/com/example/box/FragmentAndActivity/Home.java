@@ -6,9 +6,18 @@ import android.widget.FrameLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 
+import com.example.box.Entity.AsyncResponse;
+import com.example.box.Entity.DataHandler;
+import com.example.box.Entity.User;
 import com.example.box.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class Home extends AppCompatActivity {
     private FrameLayout frameLayout;
@@ -23,8 +32,11 @@ public class Home extends AppCompatActivity {
         //Initialize UI
         initializeUI();
 
-        //Set up view pager
-        //setUpViewPager();
+        // Get current user
+        getUserInformation();
+
+        //Set home fragment when first load
+        changeFragment(new HomeFragment());
 
         //Select icon in bottom navigation
         selectOption();
@@ -64,5 +76,50 @@ public class Home extends AppCompatActivity {
         fragmentManager.beginTransaction()
                 .replace(R.id.frame_layout, fragment)
                 .commit();
+    }
+
+    private void getUserInformation() {
+        String urlStr = "/box/getUser.php";
+
+        // Get current user id
+        String userId = FirebaseAuth.getInstance().getUid();
+
+        DataHandler dataHandler = new DataHandler(new AsyncResponse() {
+            @Override
+            public void processFinish(String output) {
+                if (!output.equals("NO"))
+                {
+                    try
+                    {
+                        JSONArray jsonArray = new JSONArray(output);
+
+                        // Iterate over the JSON array
+                        for (int i = 0; i < jsonArray.length(); i++)
+                        {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                            // Map the values to your ClassA object
+                            String address = jsonObject.getString("diachi");
+                            String phoneNumber = jsonObject.getString("sodienthoai");
+                            String name = jsonObject.getString("tenkhachhang");
+                            String avatar = jsonObject.getString("anhdaidien");
+
+                            User user = new User(address, phoneNumber, name, avatar);
+
+                            // Put it in SharedViewModel in order to share it between fragments
+                            SharedViewModel sharedViewModel = new ViewModelProvider(Home.this)
+                                    .get(SharedViewModel.class);
+                            sharedViewModel.setUser(user);
+                        }
+                    }
+
+                    catch (JSONException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        });
+        dataHandler.execute(DataHandler.TYPE_GET_USER_INFO, urlStr, userId);
     }
 }
