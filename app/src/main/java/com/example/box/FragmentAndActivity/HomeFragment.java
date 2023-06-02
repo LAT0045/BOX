@@ -1,6 +1,8 @@
 package com.example.box.FragmentAndActivity;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,7 +67,7 @@ public class HomeFragment extends Fragment {
 
         //categorySetData();
 
-        test();
+        getProductInfo();
 
         return view;
     }
@@ -147,27 +149,50 @@ public class HomeFragment extends Fragment {
 
     private void getProductInfo() {
         String urlStr = "/box/getProduct.php";
+        productList = new ArrayList<>();
+        DataHandler dataHandler = new DataHandler(new AsyncResponse() {
+            @Override
+            public void processFinish(String output) {
+                JSONArray jsonArray = null;
+                Log.d("test", output);
+                try {
+                    jsonArray = new JSONArray(output);
 
-        JSONArray jsonArray = new JSONArray();
+                    for (int i = 0; i < jsonArray.length(); i++)
+                    {
+                        JSONObject jsonObject = null;
 
-        for (int i = 0; i < jsonArray.length(); i++)
-        {
-            JSONObject jsonObject = null;
-            try {
-                jsonObject = jsonArray.getJSONObject(i);
+                        jsonObject = jsonArray.getJSONObject(i);
 
-                String productName = jsonObject.getString("tensanpham");
-                double productPrice  = jsonObject.getDouble("gia");
-                String productImg = jsonObject.getString("anhsanpham");
+                        String productName = jsonObject.getString("tensanpham");
+                        double productPrice  = jsonObject.getDouble("gia");
+                        String productImg = jsonObject.getString("anhsanpham");
 
-                Product product = new Product(productImg, productName, productPrice);
-                productList.add(product);
+                        Product product = new Product(productImg, productName, productPrice);
+                        productList.add(product);
+                        setupRecyclerView();
+                    }
 
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
             }
+        });
 
-        }
+        dataHandler.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, dataHandler.TYPE_GET_PRODUCT_INFO, urlStr);
+    }
+
+    private void setupRecyclerView()
+    {
+        categoryRCV.setNestedScrollingEnabled(false);
+        categoryList = new ArrayList<>();
+        Category categoryTest = new Category("Category1", productList);
+        categoryList.add(categoryTest);
+        categoryList.add(categoryTest);
+        CategoryAdapter categoryAdapter1 = new CategoryAdapter(requireContext(), productList, categoryList);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(requireActivity(), 1, GridLayoutManager.VERTICAL, false );
+        categoryRCV.setLayoutManager(gridLayoutManager);
+        categoryRCV.setAdapter(categoryAdapter1);
     }
 
     private void test()

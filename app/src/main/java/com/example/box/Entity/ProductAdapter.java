@@ -59,7 +59,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
         Picasso.get().load(product.getProductImg()).into(holder.productImg);
         holder.productName.setText(product.getProductName());
-        holder.productPrice.setText(Double.toString(product.getProductPrice()));
+        double price = product.getProductPrice();
+        price = Math.round(price * 1000.0) / 1000.0;
+        holder.productPrice.setText(Double.toString(price) + "Đ");
     }
 
     @Override
@@ -83,29 +85,5 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             productPrice = itemView.findViewById(R.id.productPrice);
         }
 
-        private void getProductInfo() {
-            String urlStr = "/box/getProduct.php";
-
-            JSONArray jsonArray = new JSONArray();
-
-            for (int i = 0; i < jsonArray.length(); i++)
-            {
-                JSONObject jsonObject = null;
-                try {
-                    jsonObject = jsonArray.getJSONObject(i);
-
-                    String productName = jsonObject.getString("tensanpham");
-                    double productPrice  = jsonObject.getDouble("gia");
-                    String productImg = jsonObject.getString("anhsanpham");
-
-                    Product product = new Product(productImg, productName, productPrice);
-                    productList.add(product);
-
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
-
-            }
-        }
     }
 }

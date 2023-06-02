@@ -28,8 +28,7 @@
                 android:textSize="@dimen/_10ssp"
                 android:layout_marginStart="@dimen/_5sdp"
                 android:layout_gravity="center_vertical"
-                android:textColor="@color/orange"
-                />
+                android:textColor="@color/orange" />
 
         </LinearLayout>
 
@@ -84,6 +83,147 @@
             android:layout_height="@dimen/_130sdp"
             android:background="@color/gray"
             android:layout_marginTop="@dimen/_10sdp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:gravity="center_vertical"
+            android:layout_gravity="center_horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:layout_marginEnd="@dimen/_5sdp">
+
+                <ImageView
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:background="@drawable/menu"
+                    android:layout_marginBottom="@dimen/_5sdp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/category_all"
+                    android:fontFamily="@font/comfortaa_variablefont_wght"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_9sdp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:layout_marginStart="@dimen/_5sdp">
+
+                <ImageView
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:background="@drawable/burger"
+                    android:layout_marginBottom="@dimen/_5sdp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/category_fast_food"
+                    android:fontFamily="@font/comfortaa_variablefont_wght"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_9sdp"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:layout_marginStart="@dimen/_5sdp">
+
+                <ImageView
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:background="@drawable/bubble_tea"
+                    android:layout_marginBottom="@dimen/_5sdp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/category_drink"
+                    android:fontFamily="@font/comfortaa_variablefont_wght"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_9sdp"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:layout_marginStart="@dimen/_5sdp">
+
+                <ImageView
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:background="@drawable/banh_mi"
+                    android:layout_marginBottom="@dimen/_5sdp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/category_vietnamese_food"
+                    android:fontFamily="@font/comfortaa_variablefont_wght"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_9sdp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:layout_marginStart="@dimen/_5sdp">
+
+                <ImageView
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:background="@drawable/korean"
+                    android:layout_marginBottom="@dimen/_5sdp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/category_korean_food"
+                    android:fontFamily="@font/comfortaa_variablefont_wght"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_9sdp"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:layout_marginStart="@dimen/_5sdp">
+
+                <ImageView
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:background="@drawable/sushi"
+                    android:layout_marginBottom="@dimen/_5sdp"/>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/category_japanese_food"
+                    android:fontFamily="@font/comfortaa_variablefont_wght"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_9sdp"/>
+            </LinearLayout>
+
+        </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/category_rcv"

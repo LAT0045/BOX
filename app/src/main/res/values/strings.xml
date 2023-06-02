@@ -31,6 +31,13 @@
     <string name="facebook_client_token">ea744160e94a86857cead716506d0c86</string>
     <string name="map_api_key">AIzaSyBknGDde114KjDnfMDtw3u4TGx2NOmMCAI</string>
 
+    <string name="category_fast_food">Fast Food</string>
+    <string name="category_drink">Nước Uống</string>
+    <string name="category_vietnamese_food">Món Việt</string>
+    <string name="category_korean_food">Món Hàn</string>
+    <string name="category_japanese_food">Fast Food</string>
+    <string name="category_all">Tất cả</string>
+
     <string name="home">Home</string>
     <string name="favorite">Yêu thích</string>
     <string name="order">Đơn hàng</string>
