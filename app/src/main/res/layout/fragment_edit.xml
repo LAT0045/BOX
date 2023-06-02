@@ -10,11 +10,11 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/_30sdp"
-        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginStart="@dimen/_20sdp"
         android:layout_marginTop="@dimen/_20sdp"
         android:layout_marginEnd="@dimen/_20sdp">
         <ImageView
-            android:id="@+id/btn_back"
+            android:id="@+id/back_button"
             android:layout_width="@dimen/_30sdp"
             android:layout_height="@dimen/_30sdp"
             android:background="@drawable/btn_back"
@@ -22,6 +22,7 @@
             android:layout_alignParentStart="true"/>
 
         <TextView
+            android:id="@+id/save_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/save"
@@ -33,6 +34,7 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/select_button"
         android:layout_width="@dimen/_120sdp"
         android:layout_height="@dimen/_120sdp"
         android:layout_marginTop="@dimen/_10sdp"
@@ -86,7 +88,7 @@
         android:fontFamily="@font/comfortaa_variablefont_wght"
         android:textSize="@dimen/_16ssp"
         android:textColor="@color/black"
-        android:layout_marginTop="@dimen/_20sdp"/>
+        android:layout_marginTop="@dimen/_50sdp"/>
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/name_edit_text"
@@ -97,23 +99,6 @@
         app:backgroundTint="@color/orange"
         android:fontFamily="@font/comfortaa_variablefont_wght"/>
 
-    <TextView
-        android:layout_width="@dimen/_230sdp"
-        android:layout_height="wrap_content"
-        android:text="@string/password"
-        android:fontFamily="@font/comfortaa_variablefont_wght"
-        android:textSize="@dimen/_16ssp"
-        android:textColor="@color/black"
-        android:layout_marginTop="@dimen/_10sdp"/>
-
-    <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/password_edit_text"
-        android:layout_width="@dimen/_230sdp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:inputType="textPassword"
-        app:backgroundTint="@color/orange"
-        android:fontFamily="@font/comfortaa_variablefont_wght"/>
 
     <TextView
         android:layout_width="@dimen/_230sdp"
@@ -147,6 +132,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_10sdp"
         android:inputType="text"
-        app:backgroundTint="@color/orange"
-        android:fontFamily="@font/comfortaa_variablefont_wght"/>
+        android:fontFamily="@font/comfortaa_variablefont_wght"
+        android:clickable="false"
+        android:cursorVisible="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        app:backgroundTint="@color/orange"/>
 </LinearLayout>

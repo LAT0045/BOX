@@ -15,16 +15,25 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 
-public class UserHandler extends AsyncTask<String, Void, String> {
+public class DataHandler extends AsyncTask<String, Void, String> {
+    // Task Type
     public static final String TYPE_SIGN_UP_GOOGLE = "Sign Up Google";
     public static final String TYPE_SIGN_UP_EMAIL = "Sign Up Email";
     public static final String TYPE_GET_USER_INFO = "Get User Info";
+    public static final String TYPE_UPDATE_USER_INFO = "Update User Info";
+
+    // Update User Type
+    public static final String TYPE_CHANGE_USER_NAME = "name";
+    public static final String TYPE_CHANGE_USER_ADDRESS = "address";
+    public static final String TYPE_CHANGE_USER_PHONE_NUMBER = "phoneNumber";
+    public static final String TYPE_CHANGE_USER_AVATAR = "avatar";
+
     //public final String IP = "http://192.168.1.10";
     public final String IP = "http://192.168.1.6";
 
     private AsyncResponse asyncResponse;
 
-    public UserHandler(AsyncResponse asyncResponse) {
+    public DataHandler(AsyncResponse asyncResponse) {
         this.asyncResponse = asyncResponse;
     }
 
@@ -86,6 +95,19 @@ public class UserHandler extends AsyncTask<String, Void, String> {
                 String id = strings[2];
 
                 data = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(id, "UTF-8");
+            }
+
+            else if (type.equals(TYPE_UPDATE_USER_INFO))
+            {
+                String id = strings[2];
+                String changeType = strings[3];
+                String changeValue = strings[4];
+
+                data = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(id, "UTF-8")
+                        + "&"
+                        + URLEncoder.encode("changeType", "UTF-8") + "=" + URLEncoder.encode(changeType, "UTF-8")
+                        + "&"
+                        + URLEncoder.encode("changeValue", "UTF-8") + "=" + URLEncoder.encode(changeValue, "UTF-8");
             }
 
             bufferedWriter.write(data);
