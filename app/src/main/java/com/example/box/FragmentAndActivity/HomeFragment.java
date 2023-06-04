@@ -16,6 +16,9 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.denzcoskun.imageslider.ImageSlider;
+import com.denzcoskun.imageslider.constants.ScaleTypes;
+import com.denzcoskun.imageslider.models.SlideModel;
 import com.example.box.Entity.AsyncResponse;
 import com.example.box.Entity.Category;
 import com.example.box.Entity.CategoryAdapter;
@@ -38,6 +41,8 @@ public class HomeFragment extends Fragment {
     private View view;
     private TextView locationText;
     private ImageView locationMoreButton;
+
+    private ImageSlider imageSlider;
     private RecyclerView categoryRCV;
     private CategoryAdapter categoryAdapter;
 
@@ -69,6 +74,8 @@ public class HomeFragment extends Fragment {
 
         getProductInfo();
 
+        bannerSlider();
+
         return view;
     }
 
@@ -76,6 +83,7 @@ public class HomeFragment extends Fragment {
         locationText = (TextView) view.findViewById(R.id.location_text);
         locationMoreButton = (ImageView) view.findViewById(R.id.location_more_button);
         categoryRCV = (RecyclerView) view.findViewById(R.id.category_rcv);
+        imageSlider = (ImageSlider)  view.findViewById(R.id.imgBanner);
     }
 
     private void setUpInformation() {
@@ -215,26 +223,15 @@ public class HomeFragment extends Fragment {
         categoryRCV.setAdapter(categoryAdapter1);
     }
 
-//    private void categorySetData()
-//    {
-//        CategoryAdapter categoryAdapter = new CategoryAdapter(getActivity());
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
-//
-//        categoryAdapter.setData(getListCategory());
-//        categoryRCV.setAdapter(categoryAdapter);
-//    }
+    public void bannerSlider()
+    {
+        ArrayList<SlideModel> slideModels = new ArrayList<>();
 
-//    private List<Category> getListCategory()
-//    {
-//        List<Category> list = new ArrayList<>();
-//
-//        ProductAdapter productAdapter = new ProductAdapter();
-//        List<Product> productList = productAdapter.getProductList();
-//
-//        Category category = new Category("Category", productList);
-//
-//        list.add(category);
-//
-//        return list;
-//    }
+        slideModels.add(new SlideModel(R.drawable.banner, ScaleTypes.CENTER_CROP));
+        slideModels.add(new SlideModel(R.drawable.banner, ScaleTypes.CENTER_CROP));
+        slideModels.add(new SlideModel(R.drawable.banner, ScaleTypes.CENTER_CROP));
+        slideModels.add(new SlideModel(R.drawable.banner, ScaleTypes.CENTER_CROP));
+
+        imageSlider.setImageList(slideModels, ScaleTypes.CENTER_CROP);
+    }
 }

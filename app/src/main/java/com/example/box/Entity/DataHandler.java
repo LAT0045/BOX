@@ -29,7 +29,8 @@ public class DataHandler extends AsyncTask<String, Void, String> {
     public static final String TYPE_CHANGE_USER_PHONE_NUMBER = "phoneNumber";
     public static final String TYPE_CHANGE_USER_AVATAR = "avatar";
 
-    public final String IP = "http://192.168.1.10";
+//    public final String IP = "http://192.168.1.10";
+    public final String IP = "http://192.168.179.250";
 //    public final String IP = "http://192.168.1.6";
 
     private AsyncResponse asyncResponse;
