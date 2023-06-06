@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/_15sdp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:layout_marginBottom="@dimen/_20sdp">
     
     <TextView
         android:id="@+id/category_tv"
@@ -11,14 +11,11 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/_18sdp"
         android:textColor="@color/orange"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:text="SALE"/>
+        android:layout_marginStart="@dimen/_10sdp"/>
     
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/category_product"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:layout_marginStart="@dimen/_5sdp"/>
-
+        android:layout_marginTop="@dimen/_5sdp"/>
 </LinearLayout>

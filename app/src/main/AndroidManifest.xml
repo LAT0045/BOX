@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.box">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <queries>
         <provider android:authorities="com.facebook.katana.provider.PlatformProvider" /> <!-- allows app to access Facebook app features -->
@@ -24,26 +24,31 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:fullBackupContent"
         tools:targetApi="31">
+        <activity
+            android:name=".FragmentAndActivity.StoreDetail2"
+            android:exported="false" />
+        <activity
+            android:name=".FragmentAndActivity.StoreDetail"
+            android:exported="false" />
+
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id"/>
-
+            android:value="@string/facebook_app_id" />
         <meta-data
             android:name="com.facebook.sdk.ClientToken"
-            android:value="@string/facebook_client_token"/>
-
+            android:value="@string/facebook_client_token" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/map_api_key"/>
+            android:value="@string/map_api_key" />
 
         <activity
-            android:name="com.example.box.FragmentAndActivity.Home"
+            android:name=".FragmentAndActivity.Home"
             android:exported="false" />
         <activity
-            android:name="com.example.box.FragmentAndActivity.SignUp"
+            android:name=".FragmentAndActivity.SignUp"
             android:exported="false" />
         <activity
-            android:name="com.example.box.FragmentAndActivity.MainActivity"
+            android:name=".FragmentAndActivity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

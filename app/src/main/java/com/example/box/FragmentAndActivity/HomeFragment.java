@@ -26,6 +26,8 @@ import com.example.box.Entity.DataHandler;
 import com.example.box.Entity.LoadingDialog;
 import com.example.box.Entity.LocationPicker;
 import com.example.box.Entity.Product;
+import com.example.box.Entity.ProductAdapter;
+import com.example.box.Entity.Store;
 import com.example.box.Entity.User;
 import com.example.box.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -44,10 +46,14 @@ public class HomeFragment extends Fragment {
 
     private ImageSlider imageSlider;
     private RecyclerView categoryRCV;
-    private CategoryAdapter categoryAdapter;
 
     private List<Product> productList;
-    private List<Category> categoryList;
+    private List<Store> storeList;
+
+    private List<Category<?>> categoryList;
+
+    private int totalTasks = 2;
+    private int finishedTasks = 0;
 
     private LoadingDialog loadingDialog;
 
@@ -70,9 +76,11 @@ public class HomeFragment extends Fragment {
         // Click more button in location
         clickMore();
 
-        //categorySetData();
-
+        // Show all products
         getProductInfo();
+
+        // Show all stores
+        getStoreInfo();
 
         bannerSlider();
 
@@ -162,8 +170,10 @@ public class HomeFragment extends Fragment {
             @Override
             public void processFinish(String output) {
                 JSONArray jsonArray = null;
-                Log.d("test", output);
-                try {
+                Log.d("TEST RECYCLERVIEW BOTH", "PRODUCT");
+
+                try
+                {
                     jsonArray = new JSONArray(output);
 
                     for (int i = 0; i < jsonArray.length(); i++)
@@ -178,49 +188,101 @@ public class HomeFragment extends Fragment {
 
                         Product product = new Product(productImg, productName, productPrice);
                         productList.add(product);
-                        setupRecyclerView();
                     }
 
-                } catch (JSONException e) {
+                }
+
+                catch (JSONException e)
+                {
                     throw new RuntimeException(e);
                 }
+
+                // Mark task as done
+                taskFinishedCallBack();
             }
         });
 
-        dataHandler.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, dataHandler.TYPE_GET_PRODUCT_INFO, urlStr);
+        dataHandler.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, dataHandler.TYPE_GET_PRODUCT_STORE, urlStr);
+    }
+
+    private void getStoreInfo() {
+        String urlStr = "/box/getStore.php";
+        storeList = new ArrayList<>();
+        DataHandler dataHandler = new DataHandler(new AsyncResponse() {
+            @Override
+            public void processFinish(String output) {
+                JSONArray jsonArray = null;
+
+                try {
+                    jsonArray = new JSONArray(output);
+
+                    for (int i = 0; i < jsonArray.length(); i++)
+                    {
+                        JSONObject jsonObject = null;
+
+                        jsonObject = jsonArray.getJSONObject(i);
+
+                        String storeId = jsonObject.getString("macuahang");
+                        String storeName = jsonObject.getString("tencuahang");
+                        String storeImage  = jsonObject.getString("hinhanh");
+                        String storeAddress = jsonObject.getString("diachi");
+
+                        Store store = new Store(storeId, storeName, storeImage, storeAddress);
+                        storeList.add(store);
+                    }
+
+                }
+
+                catch (JSONException e)
+                {
+                    throw new RuntimeException(e);
+                }
+
+                // Mark task as done
+                taskFinishedCallBack();
+            }
+        });
+
+        dataHandler.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, dataHandler.TYPE_GET_PRODUCT_STORE, urlStr);
+    }
+
+    private void taskFinishedCallBack() {
+        finishedTasks++;
+
+        if (finishedTasks == totalTasks)
+        {
+            // All tasks are done
+            // Set up recycler view
+            setupRecyclerView();
+        }
     }
 
     private void setupRecyclerView()
     {
+        // Make sure that the recyclerview can be swiped while in nested scroll view
         categoryRCV.setNestedScrollingEnabled(false);
-        categoryList = new ArrayList<>();
-        Category categoryTest = new Category("Category1", productList);
-        categoryList.add(categoryTest);
-        categoryList.add(categoryTest);
-        CategoryAdapter categoryAdapter1 = new CategoryAdapter(requireContext(), productList, categoryList);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(requireActivity(), 1, GridLayoutManager.VERTICAL, false );
-        categoryRCV.setLayoutManager(gridLayoutManager);
-        categoryRCV.setAdapter(categoryAdapter1);
-    }
 
-    private void test()
-    {
-        categoryRCV.setNestedScrollingEnabled(false);
-        productList = new ArrayList<>();
-        categoryList = new ArrayList<>();
-        Product product1 = new Product("https://firebasestorage.googleapis.com/v0/b/pbox-b4a17.appspot.com/o/Product_image%2FPMVQDX.jpg?alt=media&token=4512b551-884e-42dd-8667-df41d54bdb51&_gl=1*1wbqngr*_ga*MTk2MTAxOTE4OC4xNjgzMTgzMzAy*_ga_CW55HF8NVT*MTY4NTQzNzg0MC4xOC4xLjE2ODU0MzgyNTguMC4wLjA.", "Phô Mai Việt Quất Đá Xay", 10.99);
-        productList.add(product1);
-        productList.add(product1);
-        productList.add(product1);
-        productList.add(product1);
-        productList.add(product1);
-        Category categoryTest = new Category("Category1", productList);
-        categoryList.add(categoryTest);
-        categoryList.add(categoryTest);
-        CategoryAdapter categoryAdapter1 = new CategoryAdapter(requireContext(), productList, categoryList);
+        // Initialize category list
+        categoryList = new ArrayList<Category<?>>();
+
+        // Category show the product
+        Category<Product> products = new Category<Product>("", productList);
+
+        // Category show the store
+        Category<Store> stores = new Category<Store>("Cửa hàng", storeList);
+
+        // Add all categories
+        categoryList.add(products);
+        categoryList.add(stores);
+
+        // Set up grid and layout manager
         GridLayoutManager gridLayoutManager = new GridLayoutManager(requireActivity(), 1, GridLayoutManager.VERTICAL, false );
         categoryRCV.setLayoutManager(gridLayoutManager);
-        categoryRCV.setAdapter(categoryAdapter1);
+
+        // Set category to recyclerview
+        CategoryAdapter categoryAdapter = new CategoryAdapter(requireActivity(), categoryList);
+        categoryAdapter.setType(ProductAdapter.PRODUCT_IN_HOME_TYPE);
+        categoryRCV.setAdapter(categoryAdapter);
     }
 
     public void bannerSlider()
