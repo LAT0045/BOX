@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -252,7 +251,6 @@ public class EditFragment extends Fragment {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("CHECK SAVE FUNCTION", "BEFORE DOING ANYTHING");
                 String newName = nameEditText.getText().toString().trim();
                 String newPhoneNumber = phoneEditText.getText().toString();
                 String newAddress = addressEditText.getText().toString();

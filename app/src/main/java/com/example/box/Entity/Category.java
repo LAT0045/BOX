@@ -2,13 +2,13 @@ package com.example.box.Entity;
 
 import java.util.List;
 
-public class Category {
+public class Category<Type> {
     private String categoryName;
-    List<Product> productList;
+    List<?> list;
 
-    public Category(String categoryName, List<Product> productList) {
+    public Category(String categoryName, List<?> list) {
         this.categoryName = categoryName;
-        this.productList = productList;
+        this.list = list;
     }
 
     public String getCategoryName() {
@@ -19,11 +19,11 @@ public class Category {
         this.categoryName = categoryName;
     }
 
-    public List<Product> getProductList() {
-        return productList;
+    public List<?> getList() {
+        return list;
     }
 
-    public void setProductList(List<Product> productList) {
-        this.productList = productList;
+    public void setList(List<?> list) {
+        this.list = list;
     }
 }
