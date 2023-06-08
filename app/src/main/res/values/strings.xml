@@ -38,6 +38,8 @@
     <string name="category_japanese_food">Fast Food</string>
     <string name="category_all">Tất cả</string>
 
+    <string name="product_description_example">Phô Mai và Việt Quất kết hợp tạo nên một món đá xay thơm ngon vào những ngày oi bức.</string>
+
     <string name="home">Home</string>
     <string name="favorite">Yêu thích</string>
     <string name="order">Đơn hàng</string>

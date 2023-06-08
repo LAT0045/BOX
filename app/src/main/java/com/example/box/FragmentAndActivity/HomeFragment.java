@@ -57,6 +57,7 @@ public class HomeFragment extends Fragment {
 
     private LoadingDialog loadingDialog;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -175,6 +176,7 @@ public class HomeFragment extends Fragment {
                 try
                 {
                     jsonArray = new JSONArray(output);
+                    Log.d("Test", output);
 
                     for (int i = 0; i < jsonArray.length(); i++)
                     {
@@ -259,6 +261,7 @@ public class HomeFragment extends Fragment {
 
     private void setupRecyclerView()
     {
+
         // Make sure that the recyclerview can be swiped while in nested scroll view
         categoryRCV.setNestedScrollingEnabled(false);
 

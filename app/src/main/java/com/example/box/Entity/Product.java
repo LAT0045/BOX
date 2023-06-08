@@ -7,7 +7,6 @@ public class Product {
     private String note;
     private String description;
     private String status;
-    private int numberOfBuyer;
 
 
 
@@ -17,14 +16,13 @@ public class Product {
         this.productPrice = productPrice;
     }
 
-    public Product(String productImg, String productName, double productPrice, String note, String description, String status, int numberOfBuyer) {
+    public Product(String productImg, String productName, double productPrice, String note, String description, String status) {
         this.productImg = productImg;
         this.productName = productName;
         this.productPrice = productPrice;
         this.note = note;
         this.description = description;
         this.status = status;
-        this.numberOfBuyer = numberOfBuyer;
     }
 
     public String getProductImg() {
@@ -75,11 +73,4 @@ public class Product {
         this.status = status;
     }
 
-    public int getNumberOfBuyer() {
-        return numberOfBuyer;
-    }
-
-    public void setNumberOfBuyer(int numberOfBuyer) {
-        this.numberOfBuyer = numberOfBuyer;
-    }
 }

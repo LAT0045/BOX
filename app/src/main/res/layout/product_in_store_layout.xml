@@ -39,7 +39,8 @@
                 android:text="55000Đ"
                 android:fontFamily="@font/comfortaa_variablefont_wght"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_12ssp"/>
+                android:textSize="@dimen/_12ssp"
+                android:layout_marginTop="@dimen/_5sdp"/>
         </LinearLayout>
         
         <LinearLayout
