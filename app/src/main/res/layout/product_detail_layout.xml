@@ -1,66 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="@dimen/_20sdp">
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_125sdp"
-            android:background="@color/orange"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_45sdp"
-            android:orientation="horizontal"
-            android:layout_marginTop="@dimen/_10sdp">
-
-            <TextView
-                android:id="@+id/product_detail_name"
-                android:layout_width="@dimen/_190sdp"
-                android:layout_height="wrap_content"
-                android:text="Phô Mai Việt Quất Đá Xay"
-                android:textStyle="bold"
-                android:textSize="@dimen/_14sdp"
-                android:layout_marginStart="@dimen/_5sdp"
-                android:fontFamily="@font/comfortaa_variablefont_wght"
-                android:textColor="@color/black"/>
-
-            <TextView
-                android:id="@+id/product_detail_price"
-                android:layout_width="@dimen/_90sdp"
-                android:layout_height="wrap_content"
-                android:text="59.000Đ"
-                android:gravity="right"
-                android:textStyle="bold"
-                android:textSize="@dimen/_14sdp"
-                android:fontFamily="@font/comfortaa_variablefont_wght"
-                android:layout_marginStart="@dimen/_20sdp"/>
-
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/product_detail_description"
+    <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/product_description_example"
-            android:textSize="@dimen/_12sdp"
-            android:fontFamily="@font/comfortaa_variablefont_wght"
-            android:textColor="@color/dark_gray"
-            android:layout_marginStart="@dimen/_10sdp"/>
+            app:cardCornerRadius="@dimen/_20sdp">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/side_dish_rv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_15sdp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-    </LinearLayout>
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_125sdp"
+                    android:background="@color/orange" />
 
-</androidx.cardview.widget.CardView>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_45sdp"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/product_detail_name"
+                        android:layout_width="@dimen/_190sdp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_5sdp"
+                        android:fontFamily="@font/comfortaa_variablefont_wght"
+                        android:text="Phô Mai Việt Quất Đá Xay"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_14sdp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/product_detail_price"
+                        android:layout_width="@dimen/_90sdp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_20sdp"
+                        android:fontFamily="@font/comfortaa_variablefont_wght"
+                        android:gravity="right"
+                        android:text="59.000Đ"
+                        android:textSize="@dimen/_14sdp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/product_detail_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:fontFamily="@font/comfortaa_variablefont_wght"
+                    android:text="@string/product_description_example"
+                    android:textColor="@color/dark_gray"
+                    android:textSize="@dimen/_12sdp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/side_dish_rv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_15sdp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:fontFamily="@font/comfortaa_variablefont_wght"
+                    android:text="Ghi Chú"
+                    android:textColor="@color/orange"
+                    android:textSize="@dimen/_15sdp"
+                    android:textStyle="bold" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_100sdp"
+                    android:layout_margin="@dimen/_10sdp"
+                    android:background="@drawable/note_box"
+                    android:gravity="top"
+                    android:hint="Bạn có dặn dò gì không?"
+                    android:padding="@dimen/_10sdp" />
+
+                <RelativeLayout
+                    android:layout_width="@dimen/_280sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_marginStart="@dimen/_20sdp">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/long_btn"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Thêm vào giỏ hàng"
+                        android:textColor="@color/white"
+                        android:fontFamily="@font/comfortaa_variablefont_wght"
+                        android:textSize="@dimen/_15sdp"
+                        android:layout_centerInParent="true"/>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+</androidx.core.widget.NestedScrollView>
