@@ -2,11 +2,11 @@ package com.example.box.FragmentAndActivity;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,9 +47,29 @@ public class HomeFragment extends Fragment {
     private ImageSlider imageSlider;
     private RecyclerView categoryRCV;
 
-    private List<Product> productList;
-    private List<Store> storeList;
+    private LinearLayout allButton;
+    private LinearLayout fastFoodButton;
+    private LinearLayout drinkButton;
+    private LinearLayout vietnameseButton;
+    private LinearLayout koreanButton;
+    private LinearLayout japaneseButton;
 
+    private View allView;
+    private View fastFoodView;
+    private View drinkView;
+    private View vietnameseView;
+    private View koreanView;
+    private View japaneseView;
+
+    private List<Product> productList;
+    private List<Product> fastFoodList;
+    private List<Product> drinkList;
+    private List<Product> vietnameseList;
+    private List<Product> koreanList;
+    private List<Product> japaneseList;
+    private List<Product> otherList;
+
+    private List<Store> storeList;
     private List<Category<?>> categoryList;
 
     private int totalTasks = 2;
@@ -83,16 +103,31 @@ public class HomeFragment extends Fragment {
         // Show all stores
         getStoreInfo();
 
+        // Show banner
         bannerSlider();
 
         return view;
     }
 
     private void initializeUI() {
-        locationText = (TextView) view.findViewById(R.id.location_text);
-        locationMoreButton = (ImageView) view.findViewById(R.id.location_more_button);
-        categoryRCV = (RecyclerView) view.findViewById(R.id.category_rcv);
-        imageSlider = (ImageSlider)  view.findViewById(R.id.imgBanner);
+        locationText = view.findViewById(R.id.location_text);
+        locationMoreButton = view.findViewById(R.id.location_more_button);
+        categoryRCV = view.findViewById(R.id.category_rcv);
+        imageSlider = view.findViewById(R.id.imgBanner);
+
+        allButton = view.findViewById(R.id.all_button);
+        fastFoodButton = view.findViewById(R.id.fast_food_button);
+        drinkButton = view.findViewById(R.id.drink_button);
+        vietnameseButton = view.findViewById(R.id.vietnamese_button);
+        koreanButton = view.findViewById(R.id.korean_button);
+        japaneseButton = view.findViewById(R.id.japanese_button);
+
+        allView = view.findViewById(R.id.all_view);
+        fastFoodView = view.findViewById(R.id.fast_food_view);
+        drinkView = view.findViewById(R.id.drink_view);
+        vietnameseView = view.findViewById(R.id.vietnamese_view);
+        koreanView = view.findViewById(R.id.korean_view);
+        japaneseView = view.findViewById(R.id.japanese_view);
     }
 
     private void setUpInformation() {
@@ -166,17 +201,23 @@ public class HomeFragment extends Fragment {
 
     private void getProductInfo() {
         String urlStr = "/box/getProduct.php";
+
         productList = new ArrayList<>();
+        fastFoodList = new ArrayList<>();
+        drinkList = new ArrayList<>();
+        vietnameseList = new ArrayList<>();
+        koreanList = new ArrayList<>();
+        japaneseList = new ArrayList<>();
+        otherList = new ArrayList<>();
+
         DataHandler dataHandler = new DataHandler(new AsyncResponse() {
             @Override
             public void processFinish(String output) {
                 JSONArray jsonArray = null;
-                Log.d("TEST RECYCLERVIEW BOTH", "PRODUCT");
 
                 try
                 {
                     jsonArray = new JSONArray(output);
-                    Log.d("Test", output);
 
                     for (int i = 0; i < jsonArray.length(); i++)
                     {
@@ -187,9 +228,43 @@ public class HomeFragment extends Fragment {
                         String productName = jsonObject.getString("tensanpham");
                         double productPrice  = jsonObject.getDouble("gia");
                         String productImg = jsonObject.getString("anhsanpham");
+                        String section = jsonObject.getString("phanloai");
+                        int productTypeId  = jsonObject.getInt("loaisanpham_id");
 
-                        Product product = new Product(productImg, productName, productPrice);
-                        productList.add(product);
+                        Product product = new Product(productImg, productName, productPrice, section);
+
+                        // Check food type
+                        // If food type is different than 6 types in Product
+                        // Then no displaying in homepage
+                        switch (productTypeId)
+                        {
+                            case Product.FAST_FOOD_TYPE:
+                                fastFoodList.add(product);
+                                productList.add(product);
+                                break;
+                            case Product.DRINK_TYPE:
+                                drinkList.add(product);
+                                productList.add(product);
+                                break;
+                            case Product.VIETNAMESE_TYPE:
+                                vietnameseList.add(product);
+                                productList.add(product);
+                                break;
+                            case Product.KOREAN_TYPE:
+                                koreanList.add(product);
+                                productList.add(product);
+                                break;
+                            case Product.JAPANESE_TYPE:
+                                japaneseList.add(product);
+                                productList.add(product);
+                                break;
+                            case Product.OTHER_TYPE:
+                                otherList.add(product);
+                                productList.add(product);
+                                break;
+                            default:
+                                break;
+                        }
                     }
 
                 }
@@ -261,7 +336,6 @@ public class HomeFragment extends Fragment {
 
     private void setupRecyclerView()
     {
-
         // Make sure that the recyclerview can be swiped while in nested scroll view
         categoryRCV.setNestedScrollingEnabled(false);
 
@@ -279,13 +353,120 @@ public class HomeFragment extends Fragment {
         categoryList.add(stores);
 
         // Set up grid and layout manager
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(requireActivity(), 1, GridLayoutManager.VERTICAL, false );
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(requireActivity(), 1,
+                GridLayoutManager.VERTICAL, false );
         categoryRCV.setLayoutManager(gridLayoutManager);
 
         // Set category to recyclerview
-        CategoryAdapter categoryAdapter = new CategoryAdapter(requireActivity(), categoryList);
+        CategoryAdapter categoryAdapter = new CategoryAdapter(requireActivity(), requireContext(), categoryList);
         categoryAdapter.setType(ProductAdapter.PRODUCT_IN_HOME_TYPE);
         categoryRCV.setAdapter(categoryAdapter);
+
+        chooseCategory(categoryAdapter);
+    }
+
+    private void chooseCategory(CategoryAdapter categoryAdapter) {
+        allButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Category<Product> products = new Category<Product>("", productList);
+                categoryList.remove(0);
+                categoryList.add(0, products);
+                categoryAdapter.setData(categoryList);
+
+                allView.setVisibility(View.VISIBLE);
+                fastFoodView.setVisibility(View.GONE);
+                drinkView.setVisibility(View.GONE);
+                vietnameseView.setVisibility(View.GONE);
+                koreanView.setVisibility(View.GONE);
+                japaneseView.setVisibility(View.GONE);
+            }
+        });
+
+        fastFoodButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Category<Product> products = new Category<Product>("", fastFoodList);
+                categoryList.remove(0);
+                categoryList.add(0, products);
+                categoryAdapter.setData(categoryList);
+
+                allView.setVisibility(View.GONE);
+                fastFoodView.setVisibility(View.VISIBLE);
+                drinkView.setVisibility(View.GONE);
+                vietnameseView.setVisibility(View.GONE);
+                koreanView.setVisibility(View.GONE);
+                japaneseView.setVisibility(View.GONE);
+            }
+        });
+
+        drinkButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Category<Product> products = new Category<Product>("", drinkList);
+                categoryList.remove(0);
+                categoryList.add(0, products);
+                categoryAdapter.setData(categoryList);
+
+                allView.setVisibility(View.GONE);
+                fastFoodView.setVisibility(View.GONE);
+                drinkView.setVisibility(View.VISIBLE);
+                vietnameseView.setVisibility(View.GONE);
+                koreanView.setVisibility(View.GONE);
+                japaneseView.setVisibility(View.GONE);
+            }
+        });
+
+        vietnameseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Category<Product> products = new Category<Product>("", vietnameseList);
+                categoryList.remove(0);
+                categoryList.add(0, products);
+                categoryAdapter.setData(categoryList);
+
+                allView.setVisibility(View.GONE);
+                fastFoodView.setVisibility(View.GONE);
+                drinkView.setVisibility(View.GONE);
+                vietnameseView.setVisibility(View.VISIBLE);
+                koreanView.setVisibility(View.GONE);
+                japaneseView.setVisibility(View.GONE);
+            }
+        });
+
+        koreanButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Category<Product> products = new Category<Product>("", koreanList);
+                categoryList.remove(0);
+                categoryList.add(0, products);
+                categoryAdapter.setData(categoryList);
+
+                allView.setVisibility(View.GONE);
+                fastFoodView.setVisibility(View.GONE);
+                drinkView.setVisibility(View.GONE);
+                vietnameseView.setVisibility(View.GONE);
+                koreanView.setVisibility(View.VISIBLE);
+                japaneseView.setVisibility(View.GONE);
+            }
+        });
+
+        japaneseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Category<Product> products = new Category<Product>("", japaneseList);
+                categoryList.remove(0);
+                categoryList.add(0, products);
+                categoryAdapter.setData(categoryList);
+
+                allView.setVisibility(View.GONE);
+                fastFoodView.setVisibility(View.GONE);
+                drinkView.setVisibility(View.GONE);
+                vietnameseView.setVisibility(View.GONE);
+                koreanView.setVisibility(View.GONE);
+                japaneseView.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     public void bannerSlider()

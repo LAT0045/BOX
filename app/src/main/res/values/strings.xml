@@ -35,7 +35,7 @@
     <string name="category_drink">Nước Uống</string>
     <string name="category_vietnamese_food">Món Việt</string>
     <string name="category_korean_food">Món Hàn</string>
-    <string name="category_japanese_food">Fast Food</string>
+    <string name="category_japanese_food">Món Nhật</string>
     <string name="category_all">Tất cả</string>
 
     <string name="product_description_example">Phô Mai và Việt Quất kết hợp tạo nên một món đá xay thơm ngon vào những ngày oi bức.</string>
@@ -59,7 +59,13 @@
     <string name="save">Lưu</string>
 
     <string name="check_out">T.Toán</string>
-    <string name="title_activity_store_detail">StoreDetail</string>
+
+    <string name="note">Ghi chú</string>
+    <string name="note_message">Bạn có dặn dò gì không?</string>
+    <string name="add_to_cart">Thêm vào giỏ hàng</string>
+
+    <string name="empty_text">Hông có gì trong hộp cả :((</string>
+
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>

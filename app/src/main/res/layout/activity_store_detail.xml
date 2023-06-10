@@ -49,7 +49,6 @@
                         android:id="@+id/store_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="aaaaaaaaaaaaaaaaaaaaaa"
                         android:fontFamily="@font/comfortaa_variablefont_wght"
                         android:textColor="@color/black"
                         android:textSize="@dimen/_18ssp"/>
@@ -113,7 +112,6 @@
                         android:id="@+id/store_rating"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="4.5/5"
                         android:fontFamily="@font/comfortaa_variablefont_wght"
                         android:textColor="@color/black"
                         android:textSize="@dimen/_13ssp"
@@ -142,18 +140,18 @@
             android:layout_gravity="center_vertical"/>
 
         <TextView
+            android:id="@+id/quantity_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2 sản phẩm"
             android:fontFamily="@font/comfortaa_variablefont_wght"
             android:textColor="@color/white"
             android:textSize="@dimen/_13ssp"
             android:layout_marginStart="@dimen/_10sdp"/>
 
         <TextView
+            android:id="@+id/price_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="118.000Đ"
             android:fontFamily="@font/comfortaa_variablefont_wght"
             android:textColor="@color/white"
             android:textSize="@dimen/_15ssp"

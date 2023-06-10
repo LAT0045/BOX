@@ -1,8 +1,7 @@
 package com.example.box.Entity;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.util.Log;
+import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,23 +23,29 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     public static final String PRODUCT_IN_STORE_TYPE = "Store";
 
     private View view;
-    private Context context;
+    private Activity activity;
     private List<Product> productList;
     private String type;
-    private int quantity = 0;
-    private RecyclerView.ViewHolder holder;
     private int position;
 
-    public ProductAdapter(Context context, List<Product> productList, String type) {
-        this.context = context;
-        this.productList = productList;
-        this.type = type;
+    public interface AddProductToCartListener {
+        void onAddingToCartCallBack(Product product, boolean isAdded);
     }
 
-    public void setData(List<Product> list)
-    {
-        this.productList = list;
-        notifyDataSetChanged();
+    private AddProductToCartListener addProductToCartListener;
+
+    public ProductAdapter(Activity activity, List<Product> productList, String type,
+                          AddProductToCartListener addProductToCartListener) {
+        this.productList = productList;
+        this.type = type;
+        this.activity = activity;
+        this.addProductToCartListener = addProductToCartListener;
+    }
+
+    public ProductAdapter(Activity activity, List<Product> productList, String type) {
+        this.productList = productList;
+        this.type = type;
+        this.activity = activity;
     }
 
     @NonNull
@@ -63,7 +68,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     public void onBindViewHolder(@NonNull ProductViewHolder holder, @SuppressLint("RecyclerView") int position) {
         this.position = position;
         Product product = productList.get(position);
-        Log.d("TYPEEEEEE", type);
 
         if (type.equals(PRODUCT_IN_HOME_TYPE))
         {
@@ -91,10 +95,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
         else if (type.equals(PRODUCT_IN_STORE_TYPE))
         {
-            ProductViewHolder productViewHolder = (ProductViewHolder) holder;
+            Picasso.get().load(product.getProductImg()).into(holder.productImage);
 
-            Picasso.get().load(product.getProductImg()).into(productViewHolder.productImage);
-            productViewHolder.productName.setText(product.getProductName());
+            holder.productName.setText(product.getProductName());
             double price = product.getProductPrice();
 
             if (price != Math.round(price))
@@ -107,40 +110,74 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                 price *= 1000;
             }
 
-            productViewHolder.productPrice.setText(Integer.toString((int) price) + "Đ");
-            productViewHolder.productQuantity.setText(Integer.toString(quantity));
+            holder.productPrice.setText(Integer.toString((int) price) + "Đ");
+
+            holder.productQuantity.setText(Integer.toString(product.getCurQuantity()));
+
+            if (product.getCurQuantity() == 0)
+            {
+                holder.removeButton.setVisibility(View.INVISIBLE);
+            }
+
+            // Show detail when click on product
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ProductDetail productDetail = new ProductDetail(activity, product,
+                            new ProductDetail.AddProductListener() {
+                        @Override
+                        public void onAddingProductCallBack(Product curProduct) {
+                            product.setCustomerNote(curProduct.getCustomerNote());
+                            product.setCurQuantity(curProduct.getCurQuantity());
+                            notifyItemChanged(position);
+
+                            holder.removeButton.setVisibility(View.VISIBLE);
+
+                            addProductToCartListener.onAddingToCartCallBack(product, true);
+                        }
+                    });
+                    productDetail.showProductDetail();
+                }
+            });
+
+            // Click on add button to add more product
+            holder.addButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int curQuantity = product.getCurQuantity();
+                    curQuantity++;
+                    product.setCurQuantity(curQuantity);
+                    notifyItemChanged(position);
+
+                    if (curQuantity > 0)
+                    {
+                        holder.removeButton.setVisibility(View.VISIBLE);
+                    }
+
+                    addProductToCartListener.onAddingToCartCallBack(product, true);
+                }
+            });
+
+            // Click on remove button to remove a product
+            holder.removeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int curQuantity = product.getCurQuantity();
+                    curQuantity--;
+                    product.setCurQuantity(curQuantity);
+                    notifyItemChanged(position);
+
+                    if (curQuantity == 0)
+                    {
+                        holder.removeButton.setVisibility(View.INVISIBLE);
+                    }
+
+                    addProductToCartListener.onAddingToCartCallBack(product, false);
+                }
+            });
 
             // TODO: Clean Code
             // TODO: Fix quantity
-            // User add a product
-            productViewHolder.addButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (quantity == 0)
-                    {
-                        productViewHolder.removeButton.setVisibility(View.VISIBLE);
-                    }
-
-                    quantity++;
-                    productViewHolder.productQuantity.setText(Integer.toString(quantity));
-                }
-            });
-
-            // User remove a product
-            productViewHolder.removeButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (quantity == 1)
-                    {
-                        productViewHolder.removeButton.setVisibility(View.GONE);
-                    }
-
-                    quantity--;
-                    productViewHolder.productQuantity.setText(Integer.toString(quantity));
-                }
-            });
-
-            Log.d("TYPEEEEEEE", "OKAYYYYYYYYY");
         }
     }
 
@@ -170,29 +207,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             productName = itemView.findViewById(R.id.product_name);
             productPrice = itemView.findViewById(R.id.product_price);
 
-            productQuantity = itemView.findViewById(R.id.product_quantity);
-
-            addButton = itemView.findViewById(R.id.add_button);
-            removeButton = itemView.findViewById(R.id.remove_button);
-        }
-    }
-
-    // This view holder is for product in store display
-    public class ProductStoreViewHolder extends RecyclerView.ViewHolder {
-        private ImageView productImage;
-        private TextView productName;
-        private TextView productPrice;
-        private TextView productQuantity;
-
-        private ImageView addButton;
-        private ImageView removeButton;
-
-        public ProductStoreViewHolder(@NonNull View itemView) {
-            super(itemView);
-
-            productImage = itemView.findViewById(R.id.product_image);
-            productName = itemView.findViewById(R.id.product_name);
-            productPrice = itemView.findViewById(R.id.product_price);
             productQuantity = itemView.findViewById(R.id.product_quantity);
 
             addButton = itemView.findViewById(R.id.add_button);

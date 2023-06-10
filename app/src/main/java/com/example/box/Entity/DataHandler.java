@@ -23,6 +23,7 @@ public class DataHandler extends AsyncTask<String, Void, String> {
     public static final String TYPE_UPDATE_USER_INFO = "Update User Info";
     public static final String TYPE_GET_PRODUCT_STORE =  "Get Product Store";
     public static final String TYPE_GET_BY_STORE_ID = "Get By Store Id";
+    public static final String TYPE_GET_PRODUCT_INFO = "Get Product Info";
 
     // Update User Type
     public static final String TYPE_CHANGE_USER_NAME = "name";
@@ -32,8 +33,8 @@ public class DataHandler extends AsyncTask<String, Void, String> {
 
 
     //public final String IP = "http://192.168.1.11";
-    public final String IP = "http://192.168.1.16";
-    //public final String IP = "http://192.168.1.6";
+    //public final String IP = "http://192.168.1.16";
+    public final String IP = "http://192.168.1.6";
 
     private AsyncResponse asyncResponse;
 
@@ -118,6 +119,12 @@ public class DataHandler extends AsyncTask<String, Void, String> {
             {
                 String storeId = strings[2];
                 data = URLEncoder.encode("storeId", "UTF-8") + "=" + URLEncoder.encode(storeId, "UTF-8");
+            }
+
+            else if (type.equals(TYPE_GET_PRODUCT_INFO))
+            {
+                String productId = strings[2];
+                data = URLEncoder.encode("productId", "UTF-8") + "=" + URLEncoder.encode(productId, "UTF-8");
             }
 
             bufferedWriter.write(data);
