@@ -2,6 +2,7 @@ package com.example.box.Entity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,16 +28,13 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     private CartChanged cartChanged;
 
-    public CategoryAdapter(Activity activity, Context context, List<?> categoryList) {
+    public CategoryAdapter(Activity activity, List<?> categoryList) {
         this.activity = activity;
-        this.context = context;
         this.categoryList = categoryList;
     }
 
-    public CategoryAdapter(Activity activity, Context context,
-                           List<?> categoryList, CartChanged cartChanged) {
+    public CategoryAdapter(Activity activity, List<?> categoryList, CartChanged cartChanged) {
         this.activity = activity;
-        this.context = context;
         this.categoryList = categoryList;
         this.cartChanged = cartChanged;
     }
@@ -54,7 +52,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     @NonNull
     @Override
     public CategoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_category, parent, false);
+        context = parent.getContext();
+        View view = LayoutInflater.from(context).inflate(R.layout.product_category, parent, false);
         return new CategoryViewHolder(view);
     }
 
@@ -89,12 +88,20 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
             else
             {
+                Log.d("CATEGORY ADPATER:", "HERE_________________");
                 Product tmp = (Product) list.get(0);
-                holder.categoryTV.setText(tmp.getSection());
+
+                if (type.equals(ProductAdapter.PRODUCT_IN_STORE_TYPE))
+                {
+                    holder.categoryTV.setText(tmp.getSection());
+                }
 
                 LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context,
                         LinearLayoutManager.VERTICAL, false);
                 holder.categoryRCV.setLayoutManager(linearLayoutManager);
+
+                // Add this line so the recycler view won't crash
+                holder.categoryRCV.setItemAnimator(null);
 
                 productAdapter = new ProductAdapter(activity, (List<Product>) category.getList(),
                         type, new ProductAdapter.AddProductToCartListener() {

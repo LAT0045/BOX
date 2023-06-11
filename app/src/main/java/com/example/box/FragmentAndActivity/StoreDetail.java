@@ -3,6 +3,7 @@ package com.example.box.FragmentAndActivity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -26,6 +27,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -76,6 +79,8 @@ public class StoreDetail extends AppCompatActivity {
         getStoreById();
 
         getStoreProducts();
+
+        clickCheckOut();
 
         clickBack();
     }
@@ -176,9 +181,20 @@ public class StoreDetail extends AppCompatActivity {
                             double price = jsonObject.getDouble("gia");
                             String section = jsonObject.getString("phanloai");
                             String description = jsonObject.getString("mota");
+                            String storeId = jsonObject.getString("cuahang_id");
+
+                            if (price != Math.round(price))
+                            {
+                                DecimalFormat decimalFormat = new DecimalFormat("#.###");
+                                decimalFormat.setRoundingMode(RoundingMode.DOWN);
+
+                                String priceStr = decimalFormat.format(price);
+                                price = Double.parseDouble(priceStr);
+                                price *= 1000;
+                            }
 
                             Product product = new Product(productId, image, name,
-                                    price, section, description);
+                                    (int) price, section, description, storeId);
 
                             // Create a tmp product list to store the current list get from map by key
                             List<Product> tmpProductList = new ArrayList<>();
@@ -246,8 +262,26 @@ public class StoreDetail extends AppCompatActivity {
                 GridLayoutManager.VERTICAL, false );
         categoryRcv.setLayoutManager(gridLayoutManager);
 
+        // Restore cart items if user return from check out
+        cartItems = getIntent().getParcelableArrayListExtra("checkOutList");
+        if (cartItems != null)
+        {
+            categoryList = restoreCartItem(categoryList);
+
+            // Update price
+            priceText.setText(Integer.toString(getTotalPrice()) + "Đ");
+
+            // Update quantity
+            quantityText.setText(Integer.toString(getAllItemsInCart()) + " sản phẩm");
+        }
+
+        else
+        {
+            cartItems = new ArrayList<>();
+        }
+
         // Set category to recyclerview
-        CategoryAdapter categoryAdapter = new CategoryAdapter(this, this,
+        CategoryAdapter categoryAdapter = new CategoryAdapter(this,
                 categoryList, new CategoryAdapter.CartChanged() {
             @Override
             public void onCartChanged(Product product, boolean isAdded) {
@@ -297,8 +331,11 @@ public class StoreDetail extends AppCompatActivity {
                 {
                     for(int i = 0; i < cartItems.size(); i++)
                     {
-                        Log.d("THIS IS THE ITEM IN CART:", cartItems.get(i).getProductName()
-                                + "_" + Integer.toString(cartItems.get(i).getCurQuantity()));
+                        Log.d("THIS IS THE ITEM IN CART (BEFORE):", "THIS IS THE ITEM IN CART (BEFORE):");
+                        Log.d("THIS IS THE ITEM IN CART (BEFORE):", cartItems.get(i).getProductName()
+                                + "_" + product.getProductId());
+                        Log.d("THIS IS THE ITEM IN CART (BEFORE):", "TOPPING: " +
+                                Integer.toString(cartItems.get(i).getToppingList().size()));
                     }
 
                     Log.d("", "______________________________");
@@ -309,6 +346,40 @@ public class StoreDetail extends AppCompatActivity {
         categoryRcv.setAdapter(categoryAdapter);
     }
 
+    private List<Category<?>> restoreCartItem(List<Category<?>> categoryList) {
+        Map<String, Product> map = new HashMap<>();
+        for(Product product : cartItems)
+        {
+            map.put(product.getProductId(), product);
+        }
+
+        for(int i = 0; i < categoryList.size(); i++)
+        {
+            boolean isChanged = false;
+            List<Product> tmpProducts = (List<Product>) categoryList.get(i).getList();
+
+            for(int j = 0; j < tmpProducts.size(); j++)
+            {
+                Product tmpProduct = map.get(tmpProducts.get(j).getProductId());
+
+                if (tmpProduct != null)
+                {
+                    tmpProducts.get(j).setCurQuantity(tmpProduct.getCurQuantity());
+                    tmpProducts.get(j).setCustomerNote(tmpProduct.getCustomerNote());
+                    tmpProducts.get(j).setToppingList(tmpProduct.getToppingList());
+                    isChanged = true;
+                }
+            }
+
+            if (isChanged)
+            {
+                categoryList.get(i).setList(tmpProducts);
+            }
+        }
+
+        return categoryList;
+    }
+
     private int getExistedProductPosition(String productId) {
         int res = -1;
 
@@ -316,7 +387,7 @@ public class StoreDetail extends AppCompatActivity {
         {
             for(int i = 0; i < cartItems.size(); i++)
             {
-                if (cartItems.get(i).getProductId() == productId)
+                if (cartItems.get(i).getProductId().equals(productId))
                 {
                     res = i;
                     break;
@@ -345,9 +416,33 @@ public class StoreDetail extends AppCompatActivity {
         int total = 0;
         for(Product product : cartItems)
         {
+            int toppingPrice = getToppingPrice(product.getToppingList());
+            total += (product.getProductPrice() * product.getCurQuantity());
+            total += toppingPrice;
+        }
+        return total;
+    }
+
+    private int getToppingPrice(List<Product> toppings) {
+        int total = 0;
+        for(Product product : toppings)
+        {
             total += (product.getProductPrice() * product.getCurQuantity());
         }
         return total;
+    }
+
+    private void clickCheckOut() {
+        checkOutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(StoreDetail.this, Order.class);
+                intent.putParcelableArrayListExtra("checkOutList",
+                        (ArrayList<? extends Parcelable>) cartItems);
+                intent.putExtra("storeId", storeId);
+                startActivity(intent);
+            }
+        });
     }
 
     private void clickBack() {

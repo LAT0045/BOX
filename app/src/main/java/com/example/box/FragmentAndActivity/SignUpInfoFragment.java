@@ -169,40 +169,21 @@ public class SignUpInfoFragment extends Fragment {
         bundle.putString("email", email);
         bundle.putString("password", password);
 
-        // Get SignUpUpdateInfoFragment from back stack with tag
-        UpdateFragment updateFragment = (UpdateFragment) fragmentManager
-                .findFragmentByTag("updateFragment");
+        UpdateFragment updateFragment = new UpdateFragment();
+        updateFragment.setArguments(bundle);
 
-        // If fragment not exists then create new onw
-        if (updateFragment == null)
-        {
-            updateFragment = new UpdateFragment();
-            updateFragment.setArguments(bundle);
-
-            // Replace current fragment with update fragment and add to back stack
-            fragmentManager.beginTransaction()
-                    .replace(R.id.container, updateFragment, "updateFragment")
-                    .addToBackStack("updateFragment")
-                    .commit();
-        }
-
-        // If fragment exists then
-        else
-        {
-            updateFragment.setArguments(bundle);
-
-            // Replace current fragment with update fragment and not add to back stack
-            fragmentManager.beginTransaction()
-                    .replace(R.id.container, updateFragment, "updateFragment")
-                    .commit();
-        }
+        // Replace current fragment with update fragment
+        fragmentManager.beginTransaction()
+                .replace(R.id.container, updateFragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     private void clickBack() {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: Implement back button
+                //TODO: Implement back button
             }
         });
     }

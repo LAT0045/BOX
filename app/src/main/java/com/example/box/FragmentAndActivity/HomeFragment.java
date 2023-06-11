@@ -36,6 +36,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -231,7 +233,17 @@ public class HomeFragment extends Fragment {
                         String section = jsonObject.getString("phanloai");
                         int productTypeId  = jsonObject.getInt("loaisanpham_id");
 
-                        Product product = new Product(productImg, productName, productPrice, section);
+                        if (productPrice != Math.round(productPrice))
+                        {
+                            DecimalFormat decimalFormat = new DecimalFormat("#.###");
+                            decimalFormat.setRoundingMode(RoundingMode.DOWN);
+
+                            String priceStr = decimalFormat.format(productPrice);
+                            productPrice = Double.parseDouble(priceStr);
+                            productPrice *= 1000;
+                        }
+
+                        Product product = new Product(productImg, productName, (int) productPrice, section);
 
                         // Check food type
                         // If food type is different than 6 types in Product
@@ -358,7 +370,7 @@ public class HomeFragment extends Fragment {
         categoryRCV.setLayoutManager(gridLayoutManager);
 
         // Set category to recyclerview
-        CategoryAdapter categoryAdapter = new CategoryAdapter(requireActivity(), requireContext(), categoryList);
+        CategoryAdapter categoryAdapter = new CategoryAdapter(requireActivity(), categoryList);
         categoryAdapter.setType(ProductAdapter.PRODUCT_IN_HOME_TYPE);
         categoryRCV.setAdapter(categoryAdapter);
 

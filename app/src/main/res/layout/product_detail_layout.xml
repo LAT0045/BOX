@@ -75,7 +75,7 @@
                 android:textSize="@dimen/_12sdp" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/side_dish_rcv"
+                android:id="@+id/topping_rcv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_15sdp" />

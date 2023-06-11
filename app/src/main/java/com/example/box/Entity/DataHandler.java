@@ -23,7 +23,9 @@ public class DataHandler extends AsyncTask<String, Void, String> {
     public static final String TYPE_UPDATE_USER_INFO = "Update User Info";
     public static final String TYPE_GET_PRODUCT_STORE =  "Get Product Store";
     public static final String TYPE_GET_BY_STORE_ID = "Get By Store Id";
-    public static final String TYPE_GET_PRODUCT_INFO = "Get Product Info";
+    public static final String TYPE_GET_TOPPING = "Get Topping";
+    public static final String TYPE_PURCHASE = "Purchase";
+    public static final String TYPE_INSERT_PURCHASE_DETAIL = "TYPE_INSERT_PURCHASE_DETAIL";
 
     // Update User Type
     public static final String TYPE_CHANGE_USER_NAME = "name";
@@ -40,6 +42,10 @@ public class DataHandler extends AsyncTask<String, Void, String> {
 
     public DataHandler(AsyncResponse asyncResponse) {
         this.asyncResponse = asyncResponse;
+    }
+
+    public DataHandler() {
+
     }
 
     @Override
@@ -121,10 +127,51 @@ public class DataHandler extends AsyncTask<String, Void, String> {
                 data = URLEncoder.encode("storeId", "UTF-8") + "=" + URLEncoder.encode(storeId, "UTF-8");
             }
 
-            else if (type.equals(TYPE_GET_PRODUCT_INFO))
+            else if (type.equals(TYPE_GET_TOPPING))
             {
-                String productId = strings[2];
-                data = URLEncoder.encode("productId", "UTF-8") + "=" + URLEncoder.encode(productId, "UTF-8");
+                String storeId = strings[2];
+                data = URLEncoder.encode("storeId", "UTF-8") + "=" + URLEncoder.encode(storeId, "UTF-8");
+            }
+
+            else if (type.equals(TYPE_PURCHASE))
+            {
+                String purchaseId = strings[2];
+                String timeAppointment = strings[3];
+                String phoneNumber = strings[4];
+                String currentDate = strings[5];
+                String address = strings[6];
+                String userId = strings[7];
+                String products = strings[8];
+
+                data = URLEncoder.encode("purchaseId", "UTF-8") + "=" + URLEncoder.encode(purchaseId, "UTF-8")
+                        + "&"
+                        + URLEncoder.encode("timeAppointment", "UTF-8") + "=" + URLEncoder.encode(timeAppointment, "UTF-8")
+                        + "&"
+                        + URLEncoder.encode("phoneNumber", "UTF-8") + "=" + URLEncoder.encode(phoneNumber, "UTF-8")
+                        + "&"
+                        + URLEncoder.encode("currentDate", "UTF-8") + "=" + URLEncoder.encode(currentDate, "UTF-8")
+                        + "&"
+                        + URLEncoder.encode("address", "UTF-8") + "=" + URLEncoder.encode(address, "UTF-8")
+                        + "&"
+                        + URLEncoder.encode("userId", "UTF-8") + "=" + URLEncoder.encode(userId, "UTF-8")
+                        + "&"
+                        + URLEncoder.encode("products", "UTF-8") + "=" + URLEncoder.encode(products, "UTF-8");
+            }
+
+            else if (type.equals(TYPE_INSERT_PURCHASE_DETAIL))
+            {
+                String purchaseId = strings[2];
+                String productId = strings[3];
+                String toppings = strings[4];
+                String note = strings[5];
+
+                data = URLEncoder.encode("purchaseId", "UTF-8") + "=" + URLEncoder.encode(purchaseId, "UTF-8")
+                        + "&"
+                        + URLEncoder.encode("productId", "UTF-8") + "=" + URLEncoder.encode(productId, "UTF-8")
+                        + "&"
+                        + URLEncoder.encode("toppings", "UTF-8") + "=" + URLEncoder.encode(toppings, "UTF-8")
+                        + "&"
+                        + URLEncoder.encode("note", "UTF-8") + "=" + URLEncoder.encode(note, "UTF-8");
             }
 
             bufferedWriter.write(data);
