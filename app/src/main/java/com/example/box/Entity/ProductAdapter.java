@@ -1,8 +1,7 @@
 package com.example.box.Entity;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.util.Log;
+import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,32 +14,38 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.box.R;
 import com.squareup.picasso.Picasso;
 
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder>{
     public static final String PRODUCT_IN_HOME_TYPE = "Home";
     public static final String PRODUCT_IN_STORE_TYPE = "Store";
+    public static final String TOPPING = "Topping";
+    public static final String CHECKOUT = "Checkout";
 
     private View view;
-    private Context context;
+    private Activity activity;
     private List<Product> productList;
     private String type;
-    private int quantity = 0;
-    private RecyclerView.ViewHolder holder;
     private int position;
 
-    public ProductAdapter(Context context, List<Product> productList, String type) {
-        this.context = context;
-        this.productList = productList;
-        this.type = type;
+    public interface AddProductToCartListener {
+        void onAddingToCartCallBack(Product product, boolean isAdded);
     }
 
-    public void setData(List<Product> list)
-    {
-        this.productList = list;
-        notifyDataSetChanged();
+    private AddProductToCartListener addProductToCartListener;
+
+    public ProductAdapter(Activity activity, List<Product> productList, String type,
+                          AddProductToCartListener addProductToCartListener) {
+        this.productList = productList;
+        this.type = type;
+        this.activity = activity;
+        this.addProductToCartListener = addProductToCartListener;
+    }
+
+    public ProductAdapter(Activity activity, List<Product> productList, String type) {
+        this.productList = productList;
+        this.type = type;
+        this.activity = activity;
     }
 
     @NonNull
@@ -48,12 +53,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (type.equals(PRODUCT_IN_HOME_TYPE))
         {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_card, parent, false);
+            view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.product_card, parent, false);
         }
 
-        else if (type.equals(PRODUCT_IN_STORE_TYPE))
+        else if (type.equals(PRODUCT_IN_STORE_TYPE) || type.equals(TOPPING) || type.equals(CHECKOUT))
         {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_in_store_layout, parent, false);
+            view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.product_in_store_layout, parent, false);
         }
 
         return new ProductViewHolder(view);
@@ -63,84 +70,154 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     public void onBindViewHolder(@NonNull ProductViewHolder holder, @SuppressLint("RecyclerView") int position) {
         this.position = position;
         Product product = productList.get(position);
-        Log.d("TYPEEEEEE", type);
+
+        if(product == null){
+            return;
+        }
 
         if (type.equals(PRODUCT_IN_HOME_TYPE))
         {
-            if(product == null){
-                return;
-            }
-
             Picasso.get().load(product.getProductImg()).into(holder.productImage);
             holder.productName.setText(product.getProductName());
-            double price = product.getProductPrice();
-
-            if (price != Math.round(price))
-            {
-                DecimalFormat decimalFormat = new DecimalFormat("#.###");
-                decimalFormat.setRoundingMode(RoundingMode.DOWN);
-
-                String priceStr = decimalFormat.format(price);
-                price = Double.parseDouble(priceStr);
-                price *= 1000;
-            }
-
-            holder.productPrice.setText(Integer.toString((int) price) + "Đ");
+            holder.productPrice.setText(Integer.toString(product.getProductPrice()) + "Đ");
 
         }
 
         else if (type.equals(PRODUCT_IN_STORE_TYPE))
         {
-            ProductViewHolder productViewHolder = (ProductViewHolder) holder;
+            Picasso.get().load(product.getProductImg()).into(holder.productImage);
 
-            Picasso.get().load(product.getProductImg()).into(productViewHolder.productImage);
-            productViewHolder.productName.setText(product.getProductName());
-            double price = product.getProductPrice();
+            holder.productName.setText(product.getProductName());
 
-            if (price != Math.round(price))
+            holder.productPrice.setText(product.getProductPrice() + "Đ");
+
+            holder.productQuantity.setText(Integer.toString(product.getCurQuantity()));
+
+            if (product.getCurQuantity() > 0)
             {
-                DecimalFormat decimalFormat = new DecimalFormat("#.###");
-                decimalFormat.setRoundingMode(RoundingMode.DOWN);
-
-                String priceStr = decimalFormat.format(price);
-                price = Double.parseDouble(priceStr);
-                price *= 1000;
+                holder.removeButton.setVisibility(View.VISIBLE);
             }
 
-            productViewHolder.productPrice.setText(Integer.toString((int) price) + "Đ");
-            productViewHolder.productQuantity.setText(Integer.toString(quantity));
+            else
+            {
+                holder.removeButton.setVisibility(View.INVISIBLE);
+            }
 
-            // TODO: Clean Code
-            // TODO: Fix quantity
-            // User add a product
-            productViewHolder.addButton.setOnClickListener(new View.OnClickListener() {
+            // Show detail when click on product
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (quantity == 0)
-                    {
-                        productViewHolder.removeButton.setVisibility(View.VISIBLE);
-                    }
-
-                    quantity++;
-                    productViewHolder.productQuantity.setText(Integer.toString(quantity));
+                    ProductDetail productDetail = new ProductDetail(activity, product,
+                            new ProductDetail.AddProductListener() {
+                        @Override
+                        public void onAddingProductCallBack(Product curProduct) {
+                            product.setCustomerNote(curProduct.getCustomerNote());
+                            product.setCurQuantity(curProduct.getCurQuantity());
+                            notifyItemChanged(position);
+                            addProductToCartListener.onAddingToCartCallBack(product, true);
+                        }
+                    });
+                    productDetail.showProductDetail();
                 }
             });
 
-            // User remove a product
-            productViewHolder.removeButton.setOnClickListener(new View.OnClickListener() {
+            // Click on add button to add more product
+            holder.addButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (quantity == 1)
-                    {
-                        productViewHolder.removeButton.setVisibility(View.GONE);
-                    }
-
-                    quantity--;
-                    productViewHolder.productQuantity.setText(Integer.toString(quantity));
+                    int curQuantity = product.getCurQuantity();
+                    curQuantity++;
+                    product.setCurQuantity(curQuantity);
+                    notifyItemChanged(position);
+                    addProductToCartListener.onAddingToCartCallBack(product, true);
                 }
             });
 
-            Log.d("TYPEEEEEEE", "OKAYYYYYYYYY");
+            // Click on remove button to remove a product
+            holder.removeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int curQuantity = product.getCurQuantity();
+                    curQuantity--;
+                    product.setCurQuantity(curQuantity);
+                    notifyItemChanged(position);
+                    addProductToCartListener.onAddingToCartCallBack(product, false);
+                }
+            });
+        }
+
+        else if (type.equals(TOPPING))
+        {
+            Picasso.get().load(product.getProductImg()).into(holder.productImage);
+
+            holder.productName.setText(product.getProductName());
+            int price = product.getProductPrice();
+
+            holder.productPrice.setText(Integer.toString((int) price) + "Đ");
+
+            holder.productQuantity.setText(Integer.toString(product.getCurQuantity()));
+
+            if (product.getCurQuantity() > 0)
+            {
+                holder.removeButton.setVisibility(View.VISIBLE);
+            }
+
+            else
+            {
+                holder.removeButton.setVisibility(View.INVISIBLE);
+            }
+
+            // Click on add button to add topping
+            holder.addButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int curQuantity = product.getCurQuantity();
+                    curQuantity++;
+                    product.setCurQuantity(curQuantity);
+                    notifyItemChanged(position);
+                    addProductToCartListener.onAddingToCartCallBack(product, true);
+                }
+            });
+
+            // Click on remove button to remove topping
+            holder.removeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int curQuantity = product.getCurQuantity();
+                    curQuantity--;
+                    product.setCurQuantity(curQuantity);
+                    notifyItemChanged(position);
+                    addProductToCartListener.onAddingToCartCallBack(product, false);
+                }
+            });
+        }
+
+        else if (type.equals(CHECKOUT))
+        {
+            Picasso.get().load(product.getProductImg()).into(holder.productImage);
+
+            holder.productName.setText(product.getProductName());
+
+            holder.productPrice.setText(product.getProductPrice() + "Đ");
+
+            holder.productQuantity.setText("x" + Integer.toString(product.getCurQuantity()));
+
+            holder.addButton.setVisibility(View.INVISIBLE);
+            holder.removeButton.setVisibility(View.INVISIBLE);
+
+            List<Product> toppings = product.getToppingList();
+
+            if (toppings.size() > 0)
+            {
+                StringBuilder stringBuilder = new StringBuilder();
+
+                for (Product topping : toppings)
+                {
+                    stringBuilder.append(topping.getProductName());
+                }
+
+                holder.toppingList.setText(stringBuilder.toString());
+            }
         }
     }
 
@@ -156,8 +233,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         private ImageView productImage;
         private TextView productName;
         private TextView productPrice;
-
         private TextView productQuantity;
+        private TextView toppingList;
 
         private ImageView addButton;
         private ImageView removeButton;
@@ -169,31 +246,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             productImage = itemView.findViewById(R.id.product_image);
             productName = itemView.findViewById(R.id.product_name);
             productPrice = itemView.findViewById(R.id.product_price);
-
             productQuantity = itemView.findViewById(R.id.product_quantity);
-
-            addButton = itemView.findViewById(R.id.add_button);
-            removeButton = itemView.findViewById(R.id.remove_button);
-        }
-    }
-
-    // This view holder is for product in store display
-    public class ProductStoreViewHolder extends RecyclerView.ViewHolder {
-        private ImageView productImage;
-        private TextView productName;
-        private TextView productPrice;
-        private TextView productQuantity;
-
-        private ImageView addButton;
-        private ImageView removeButton;
-
-        public ProductStoreViewHolder(@NonNull View itemView) {
-            super(itemView);
-
-            productImage = itemView.findViewById(R.id.product_image);
-            productName = itemView.findViewById(R.id.product_name);
-            productPrice = itemView.findViewById(R.id.product_price);
-            productQuantity = itemView.findViewById(R.id.product_quantity);
+            toppingList = itemView.findViewById(R.id.topping_list);
 
             addButton = itemView.findViewById(R.id.add_button);
             removeButton = itemView.findViewById(R.id.remove_button);

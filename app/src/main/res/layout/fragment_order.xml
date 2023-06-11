@@ -44,7 +44,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Lê Anh Thư"
+                    android:text="Cupcake"
                     android:fontFamily="@font/comfortaa_variablefont_wght"
                     android:textSize="@dimen/_12sdp"
                     android:textStyle="bold"
@@ -55,7 +55,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="076981xxxx"
+                    android:text="0824511220"
                     android:fontFamily="@font/comfortaa_variablefont_wght"
                     android:textSize="@dimen/_12sdp"
                     android:textStyle="bold"
@@ -66,28 +66,12 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="155A Đường Gì Đó, Phường Gì Đó, Quận Gì Đó."
+                    android:text="34 tổ 10 ấp 2, Nhị Bình, Hóc Môn, Thành phố Hồ Chí Minh, Vietnam"
                     android:fontFamily="@font/comfortaa_variablefont_wght"
                     android:textSize="@dimen/_12sdp"
                     android:textStyle="bold"
                     android:textColor="@color/dark_gray"
                     android:layout_marginStart="@dimen/_10sdp"
-                    android:layout_marginTop="@dimen/_10sdp"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Các Món Đã Chọn"
-                    android:fontFamily="@font/comfortaa_variablefont_wght"
-                    android:textSize="@dimen/_15sdp"
-                    android:textStyle="bold"
-                    android:textColor="@color/orange"
-                    android:layout_marginStart="@dimen/_10sdp"
-                    android:layout_marginTop="@dimen/_20sdp"/>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_10sdp"/>
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
@@ -117,7 +101,7 @@
                 <TextView
                     android:layout_width="@dimen/_210sdp"
                     android:layout_height="wrap_content"
-                    android:text="500.000Đ"
+                    android:text="161000Đ"
                     android:fontFamily="@font/comfortaa_variablefont_wght"
                     android:textStyle="bold"
                     android:textSize="@dimen/_23sdp"

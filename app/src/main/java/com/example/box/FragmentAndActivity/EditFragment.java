@@ -39,6 +39,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class EditFragment extends Fragment {
     private final int IMG_REQUEST_CODE = 103;
     private View view;
@@ -272,8 +275,11 @@ public class EditFragment extends Fragment {
 
                 if (!newPhoneNumber.equals(curUser.getPhoneNumber()))
                 {
-                    totalTasks++;
-                    changePhoneNumber(newPhoneNumber);
+                    if (isValidPhoneNumber(newPhoneNumber))
+                    {
+                        totalTasks++;
+                        changePhoneNumber(newPhoneNumber);
+                    }
                 }
 
                 if (!newAddress.equals(curUser.getAddress()))
@@ -291,6 +297,21 @@ public class EditFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private boolean isValidPhoneNumber(String phoneNumber) {
+        String regexStr = "(84|0[3|5|7|8|9])+([0-9]{8})\\b";
+        Pattern pattern = Pattern.compile(regexStr, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(phoneNumber);
+        boolean isValid = matcher.find();
+
+        if (!isValid)
+        {
+            phoneEditText.setError("Số điện thoại không hợp lệ");
+            return false;
+        }
+
+        return true;
     }
 
     private void changeAvatar() {

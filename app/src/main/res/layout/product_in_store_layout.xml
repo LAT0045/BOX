@@ -8,8 +8,7 @@
     <ImageView
         android:id="@+id/product_image"
         android:layout_width="@dimen/_70sdp"
-        android:layout_height="@dimen/_70sdp"
-        android:background="@color/orange"/>
+        android:layout_height="@dimen/_70sdp"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -27,7 +26,6 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="aaaaaaaaaaaaaaaaaaaa"
                 android:fontFamily="@font/comfortaa_variablefont_wght"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_12ssp"/>
@@ -36,11 +34,16 @@
                 android:id="@+id/product_price"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="55000Đ"
                 android:fontFamily="@font/comfortaa_variablefont_wght"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_12ssp"
                 android:layout_marginTop="@dimen/_5sdp"/>
+
+            <TextView
+                android:id="@+id/topping_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/dark_gray"/>
         </LinearLayout>
         
         <LinearLayout
@@ -55,14 +58,12 @@
                 android:layout_height="@dimen/_15sdp"
                 android:background="@drawable/remove_icon"
                 android:backgroundTint="@color/orange"
-                android:layout_gravity="center_vertical"
-                android:visibility="gone"/>
+                android:layout_gravity="center_vertical"/>
 
             <TextView
                 android:id="@+id/product_quantity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2"
                 android:fontFamily="@font/comfortaa_variablefont_wght"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_12ssp"

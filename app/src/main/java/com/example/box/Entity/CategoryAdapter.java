@@ -1,5 +1,6 @@
 package com.example.box.Entity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,22 +14,34 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.box.R;
 
-import java.lang.reflect.Type;
 import java.util.List;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
+    private Activity activity;
     private Context context;
     private List<?> categoryList;
     private String type;
 
-    public CategoryAdapter(Context context, List<?> categoryList) {
-        this.context = context;
+    public interface CartChanged {
+        void onCartChanged(Product product, boolean isAdded);
+    }
+
+    private CartChanged cartChanged;
+
+    public CategoryAdapter(Activity activity, List<?> categoryList) {
+        this.activity = activity;
         this.categoryList = categoryList;
     }
 
-    public void setData(List<Type> List)
+    public CategoryAdapter(Activity activity, List<?> categoryList, CartChanged cartChanged) {
+        this.activity = activity;
+        this.categoryList = categoryList;
+        this.cartChanged = cartChanged;
+    }
+
+    public void setData(List<?> categoryList)
     {
-        this.categoryList = List;
+        this.categoryList = categoryList;
         notifyDataSetChanged();
     }
 
@@ -39,7 +52,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     @NonNull
     @Override
     public CategoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_category, parent, false);
+        context = parent.getContext();
+        View view = LayoutInflater.from(context).inflate(R.layout.product_category, parent, false);
         return new CategoryViewHolder(view);
     }
 
@@ -58,32 +72,55 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
         if (list.get(0).getClass().equals(Product.class))
         {
-            Log.d("IN CATEGORY ADAPTER", type);
+            ProductAdapter productAdapter;
             // Set up layout manager for product
             if (type.equals(ProductAdapter.PRODUCT_IN_HOME_TYPE))
             {
-                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+                // Make text view gone if it's product category
+                holder.categoryTV.setVisibility(View.GONE);
+
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context,
+                        LinearLayoutManager.HORIZONTAL, false);
                 holder.categoryRCV.setLayoutManager(linearLayoutManager);
+
+                productAdapter = new ProductAdapter(activity, (List<Product>) category.getList(), type);
             }
 
             else
             {
-                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+                Log.d("CATEGORY ADPATER:", "HERE_________________");
+                Product tmp = (Product) list.get(0);
+
+                if (type.equals(ProductAdapter.PRODUCT_IN_STORE_TYPE))
+                {
+                    holder.categoryTV.setText(tmp.getSection());
+                }
+
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context,
+                        LinearLayoutManager.VERTICAL, false);
                 holder.categoryRCV.setLayoutManager(linearLayoutManager);
+
+                // Add this line so the recycler view won't crash
+                holder.categoryRCV.setItemAnimator(null);
+
+                productAdapter = new ProductAdapter(activity, (List<Product>) category.getList(),
+                        type, new ProductAdapter.AddProductToCartListener() {
+                    @Override
+                    public void onAddingToCartCallBack(Product product, boolean isAdded) {
+                        cartChanged.onCartChanged(product, isAdded);
+                    }
+                });
             }
 
-            // Make text view gone if it's product category
-            holder.categoryTV.setVisibility(View.GONE);
-
             // Set product adapter
-            ProductAdapter productAdapter = new ProductAdapter(context, (List<Product>) category.getList(), type);
             holder.categoryRCV.setAdapter(productAdapter);
         }
 
         else if (list.get(0).getClass().equals(Store.class))
         {
             // Set up layout manager for store
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context,
+                    LinearLayoutManager.VERTICAL, false);
             holder.categoryRCV.setLayoutManager(linearLayoutManager);
 
             // Set store adapter

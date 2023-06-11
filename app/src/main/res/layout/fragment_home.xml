@@ -114,6 +114,7 @@
                     android:layout_marginStart="@dimen/_5sdp">
 
                     <LinearLayout
+                        android:id="@+id/all_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
@@ -133,9 +134,17 @@
                             android:fontFamily="@font/comfortaa_variablefont_wght"
                             android:textColor="@color/black"
                             android:textSize="@dimen/_9sdp"/>
+
+                        <View
+                            android:id="@+id/all_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_2sdp"
+                            android:background="@color/orange"
+                            android:layout_gravity="center_vertical"/>
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/fast_food_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
@@ -155,9 +164,18 @@
                             android:fontFamily="@font/comfortaa_variablefont_wght"
                             android:textColor="@color/black"
                             android:textSize="@dimen/_9sdp"/>
+
+                        <View
+                            android:id="@+id/fast_food_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_2sdp"
+                            android:background="@color/orange"
+                            android:layout_gravity="center_vertical"
+                            android:visibility="gone"/>
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/drink_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
@@ -177,9 +195,18 @@
                             android:fontFamily="@font/comfortaa_variablefont_wght"
                             android:textColor="@color/black"
                             android:textSize="@dimen/_9sdp"/>
+
+                        <View
+                            android:id="@+id/drink_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_2sdp"
+                            android:background="@color/orange"
+                            android:layout_gravity="center_vertical"
+                            android:visibility="gone"/>
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/vietnamese_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
@@ -199,9 +226,18 @@
                             android:fontFamily="@font/comfortaa_variablefont_wght"
                             android:textColor="@color/black"
                             android:textSize="@dimen/_9sdp"/>
+
+                        <View
+                            android:id="@+id/vietnamese_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_2sdp"
+                            android:background="@color/orange"
+                            android:layout_gravity="center_vertical"
+                            android:visibility="gone"/>
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/korean_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
@@ -221,9 +257,18 @@
                             android:fontFamily="@font/comfortaa_variablefont_wght"
                             android:textColor="@color/black"
                             android:textSize="@dimen/_9sdp"/>
+
+                        <View
+                            android:id="@+id/korean_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_2sdp"
+                            android:background="@color/orange"
+                            android:layout_gravity="center_vertical"
+                            android:visibility="gone"/>
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/japanese_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
@@ -243,6 +288,14 @@
                             android:fontFamily="@font/comfortaa_variablefont_wght"
                             android:textColor="@color/black"
                             android:textSize="@dimen/_9sdp"/>
+
+                        <View
+                            android:id="@+id/japanese_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_2sdp"
+                            android:background="@color/orange"
+                            android:layout_gravity="center_vertical"
+                            android:visibility="gone"/>
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
