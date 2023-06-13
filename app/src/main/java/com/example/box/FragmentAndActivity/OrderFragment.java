@@ -1,14 +1,30 @@
 package com.example.box.FragmentAndActivity;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.box.Entity.AsyncResponse;
+import com.example.box.Entity.DataHandler;
+import com.example.box.Entity.PurchaseOrder;
+import com.example.box.Entity.PurchaseOrderAdapter;
+import com.example.box.Entity.Store;
 import com.example.box.R;
+import com.google.firebase.auth.FirebaseAuth;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -19,6 +35,9 @@ public class OrderFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private View view;
+    private RecyclerView orderRCV;
+    List<PurchaseOrder> purchaseOrderList;
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -60,7 +79,74 @@ public class OrderFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_order, container, false);
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_order, container, false);
+
+        initializeUI();
+
+        getOrder();
+
+        return view;
     }
+
+    private void initializeUI()
+    {
+        orderRCV = (RecyclerView) view.findViewById(R.id.present_order_rcv);
+    }
+
+    private void getOrder(){
+        String urlStr = "/box/presentOrder.php";
+        purchaseOrderList = new ArrayList<>();
+
+        String userId = FirebaseAuth.getInstance().getUid();
+        DataHandler dataHandler = new DataHandler(new AsyncResponse() {
+            @Override
+            public void processFinish(String output) {
+                JSONArray jsonArray = null;
+
+                try {
+                    jsonArray = new JSONArray(output);
+
+                    for (int i = 0; i < jsonArray.length(); i++)
+                    {
+                        JSONObject jsonObject = null;
+
+                        jsonObject = jsonArray.getJSONObject(i);
+
+                        String storeName = jsonObject.getString("tencuahang");
+                        String foodImage  = jsonObject.getString("anhsanpham");
+                        String foodName  = jsonObject.getString("tensanpham");
+                        String status  = jsonObject.getString("tinhtrang");
+                        String price  = jsonObject.getString("dongia");
+
+                        PurchaseOrder purchaseOrder = new PurchaseOrder(storeName, status, foodName, foodImage, price);
+                        purchaseOrderList.add(purchaseOrder);
+
+                    }
+
+                    setupRCV();
+
+                }
+
+                catch (JSONException e)
+                {
+                    throw new RuntimeException(e);
+                }
+
+                // Mark task as done
+            }
+        });
+
+        dataHandler.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, dataHandler.TYPE_PRESENT_ORDER, urlStr, userId);
+    }
+
+    private void setupRCV()
+    {
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(requireActivity(), 1);
+        orderRCV.setLayoutManager(gridLayoutManager);
+
+        PurchaseOrderAdapter purchaseOrderAdapter = new PurchaseOrderAdapter(purchaseOrderList);
+        orderRCV.setAdapter(purchaseOrderAdapter);
+    }
+
 }

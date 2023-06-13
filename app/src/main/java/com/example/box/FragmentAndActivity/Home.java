@@ -35,11 +35,23 @@ public class Home extends AppCompatActivity {
         // Get current user
         getUserInformation();
 
-        //Set home fragment when first load
-        changeFragment(new HomeFragment());
+        String checkOutToOrder = getIntent().getStringExtra("Order");
+        if(checkOutToOrder != null)
+        {
+            if (checkOutToOrder.equals("CheckOutToOrder"))
+            {
+                changeFragment(new OrderFragment());
+            }
+        }
+        else {
+            //Set home fragment when first load
+            changeFragment(new HomeFragment());
+        }
+
 
         //Select icon in bottom navigation
         selectOption();
+
     }
 
     private void initializeUI() {
@@ -77,6 +89,7 @@ public class Home extends AppCompatActivity {
                 .replace(R.id.frame_layout, fragment)
                 .commit();
     }
+
 
     private void getUserInformation() {
         String urlStr = "/box/getUser.php";

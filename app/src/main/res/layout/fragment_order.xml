@@ -1,138 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".FragmentAndActivity.OrderFragment">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:orientation="vertical">
 
-        <androidx.core.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+       <TextView
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="Đơn Hàng Hiện Tại "
+           android:textColor="@color/orange"
+           android:textSize="@dimen/_20sdp"
+           android:layout_marginTop="@dimen/_10sdp"
+           android:layout_marginStart="@dimen/_10sdp"
+           android:fontFamily="@font/comfortaa_variablefont_wght"
+           android:textStyle="bold"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Đơn Hàng Hiện Tại"
-                    android:textColor="@color/orange"
-                    android:textSize="@dimen/_20sdp"
-                    android:layout_marginTop="@dimen/_10sdp"
-                    android:layout_marginStart="@dimen/_10sdp"
-                    android:fontFamily="@font/comfortaa_variablefont_wght"
-                    android:textStyle="bold"/>
+       <androidx.recyclerview.widget.RecyclerView
+           android:id="@+id/present_order_rcv"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_marginTop="@dimen/_10sdp" />
+   </LinearLayout>
 
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Thông Tin Đặt Hàng"
-                    android:fontFamily="@font/comfortaa_variablefont_wght"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/_15sdp"
-                    android:layout_marginStart="@dimen/_10sdp"
-                    android:layout_marginTop="@dimen/_10sdp"/>
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Cupcake"
-                    android:fontFamily="@font/comfortaa_variablefont_wght"
-                    android:textSize="@dimen/_12sdp"
-                    android:textStyle="bold"
-                    android:textColor="@color/dark_gray"
-                    android:layout_marginStart="@dimen/_10sdp"
-                    android:layout_marginTop="@dimen/_10sdp"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="0824511220"
-                    android:fontFamily="@font/comfortaa_variablefont_wght"
-                    android:textSize="@dimen/_12sdp"
-                    android:textStyle="bold"
-                    android:textColor="@color/dark_gray"
-                    android:layout_marginStart="@dimen/_10sdp"
-                    android:layout_marginTop="@dimen/_10sdp"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="34 tổ 10 ấp 2, Nhị Bình, Hóc Môn, Thành phố Hồ Chí Minh, Vietnam"
-                    android:fontFamily="@font/comfortaa_variablefont_wght"
-                    android:textSize="@dimen/_12sdp"
-                    android:textStyle="bold"
-                    android:textColor="@color/dark_gray"
-                    android:layout_marginStart="@dimen/_10sdp"
-                    android:layout_marginTop="@dimen/_10sdp"/>
-            </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:layout_gravity="center_horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Tổng Cộng"
-                    android:fontFamily="@font/comfortaa_variablefont_wght"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/_15sdp"
-                    android:layout_marginStart="@dimen/_10sdp"
-                    android:gravity="center_horizontal"/>
-
-                <TextView
-                    android:layout_width="@dimen/_210sdp"
-                    android:layout_height="wrap_content"
-                    android:text="161000Đ"
-                    android:fontFamily="@font/comfortaa_variablefont_wght"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/_23sdp"
-                    android:gravity="right"
-                    android:textColor="@color/orange"/>
-            </LinearLayout>
-
-            <RelativeLayout
-                android:layout_width="@dimen/_280sdp"
-                android:layout_height="@dimen/_40sdp"
-                android:layout_marginStart="@dimen/_20sdp"
-                android:layout_marginTop="@dimen/_20sdp">
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/long_btn"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Đã Nhận Được Hàng"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/comfortaa_variablefont_wght"
-                    android:textSize="@dimen/_15sdp"
-                    android:layout_centerInParent="true" />
-
-            </RelativeLayout>
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-</FrameLayout>
+</androidx.core.widget.NestedScrollView>

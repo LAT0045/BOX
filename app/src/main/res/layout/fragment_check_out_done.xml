@@ -36,6 +36,7 @@
         android:gravity="center"/>
 
     <RelativeLayout
+        android:id="@+id/btn_go_to_order"
         android:layout_width="@dimen/_280sdp"
         android:layout_height="@dimen/_40sdp"
         android:layout_marginTop="@dimen/_75sdp"
@@ -58,6 +59,7 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/btn_go_home"
         android:layout_width="@dimen/_280sdp"
         android:layout_height="@dimen/_40sdp"
         android:layout_marginTop="@dimen/_10sdp"
