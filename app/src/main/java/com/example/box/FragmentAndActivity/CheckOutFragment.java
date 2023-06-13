@@ -1,11 +1,13 @@
 package com.example.box.FragmentAndActivity;
 
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -59,10 +61,19 @@ public class CheckOutFragment extends Fragment {
     private RadioGroup radioGroup;
     private RadioButton cashButton;
     private RadioButton momoButton;
+    private String customerNote;
 
     private ImageView backButton;
     private TextView editButton;
     private RelativeLayout checkOutButton;
+
+
+    private String fee = "0";
+    int environment = 0;//developer default
+    private String merchantName = "Thanh toán đơn hàng";
+    private String merchantCode = "SCB01";
+    private String merchantNameLabel = "Box";
+    private String description = "Thanh toán dịch vụ ABC";
 
     private boolean isAllowed = false;
 
@@ -80,6 +91,7 @@ public class CheckOutFragment extends Fragment {
         if (bundle != null)
         {
             checkOutProducts = bundle.getParcelableArrayList("checkOutList");
+            customerNote = bundle.getString("note");
 
             // Set total price
             totalPriceTextView.setText(Integer.toString(getTotalPrice()) + "Đ");
@@ -152,7 +164,7 @@ public class CheckOutFragment extends Fragment {
 
                             else
                             {
-                                phoneEditText.setText("Chưa cập nhật số điện thoại");
+                                phoneEditText.setHint("Chưa cập nhật số điện thoại");
                             }
 
                             if (!address.isEmpty())
@@ -220,6 +232,10 @@ public class CheckOutFragment extends Fragment {
 
                 else
                 {
+                    InputMethodManager inputMethodManager = (InputMethodManager) requireActivity()
+                            .getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
                     ViewCompat.setBackgroundTintList(phoneEditText,
                             ColorStateList.valueOf(ContextCompat
                                     .getColor(requireActivity(), android.R.color.transparent)));
@@ -263,17 +279,6 @@ public class CheckOutFragment extends Fragment {
         int total = 0;
         for(Product product : checkOutProducts)
         {
-            int toppingPrice = getToppingPrice(product.getToppingList());
-            total += (product.getProductPrice() * product.getCurQuantity());
-            total += toppingPrice;
-        }
-        return total;
-    }
-
-    private int getToppingPrice(List<Product> toppings) {
-        int total = 0;
-        for(Product product : toppings)
-        {
             total += (product.getProductPrice() * product.getCurQuantity());
         }
         return total;
@@ -283,6 +288,10 @@ public class CheckOutFragment extends Fragment {
         checkOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                InputMethodManager inputMethodManager = (InputMethodManager) requireActivity()
+                        .getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
                 String phoneNumber = phoneEditText.getText().toString().trim();
                 String address = addressEditText.getText().toString().trim();
                 String appointment = appointmentEditText.getText().toString().trim();
@@ -312,7 +321,6 @@ public class CheckOutFragment extends Fragment {
         String purchaseOrderId = UUID.randomUUID().toString();
         purchaseOrderId = purchaseOrderId.replace("-", "");
 
-
         String urlStr = "/box/insertPurchase.php";
 
         // Get current user id
@@ -329,74 +337,25 @@ public class CheckOutFragment extends Fragment {
 
         Log.d("PRINT CHECK OUT LIST", checkOutListStr);
 
-        String finalPurchaseOrderId = purchaseOrderId;
         DataHandler dataHandler = new DataHandler(new AsyncResponse() {
             @Override
             public void processFinish(String output) {
                 Log.d("TEST CHECK OUT CASH", output);
-                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                if (!output.equals("NO"))
+                {
+                    FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
 
-                CheckOutDoneFragment checkOutDone = new CheckOutDoneFragment();
+                    CheckOutDoneFragment checkOutDone = new CheckOutDoneFragment();
 
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, checkOutDone)
-                        .addToBackStack(null)
-                        .commit();
-                //insertDetail(finalPurchaseOrderId);
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.container, checkOutDone)
+                            .addToBackStack(null)
+                            .commit();
+                }
             }
         });
         dataHandler.execute(DataHandler.TYPE_PURCHASE, urlStr, purchaseOrderId, appointment,
-                phoneNumber, currentDateStr, address, userId, checkOutListStr);
-    }
-
-    private void insertDetail(String purchaseId) {
-
-        //for (Product product : checkOutProducts)
-        //{
-            //insertAnItem(product, purchaseId);
-        //}
-
-        insertAnItem(checkOutProducts.get(0), purchaseId);
-    }
-
-    private void insertAnItem(Product product, String purchaseId) {
-        String urlStr = "/box/insertPurchaseDetail.php";
-        String toppings = "";
-        if (product.getToppingList().size() > 0)
-        {
-            Gson gson = new Gson();
-            toppings = gson.toJson(product.getToppingList());
-        }
-
-        DataHandler dataHandler = new DataHandler(new AsyncResponse() {
-            @Override
-            public void processFinish(String output) {
-                Log.d("DETAILLLLL", output);
-                //resumeLoop();
-            }
-        });
-        dataHandler.execute(DataHandler.TYPE_INSERT_PURCHASE_DETAIL, urlStr, purchaseId,
-                product.getProductId(), toppings, product.getCustomerNote());
-
-        //pauseLoop();
-    }
-
-    private boolean loopPaused = false;
-
-    private synchronized void pauseLoop() {
-        loopPaused = true;
-        while (loopPaused) {
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private synchronized void resumeLoop() {
-        loopPaused = false;
-        notifyAll();
+                phoneNumber, currentDateStr, address, userId, checkOutListStr, customerNote);
     }
 
     private boolean isEmptyEditText(String phone, String address) {

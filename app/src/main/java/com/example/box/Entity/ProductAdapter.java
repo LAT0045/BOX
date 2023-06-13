@@ -19,7 +19,6 @@ import java.util.List;
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder>{
     public static final String PRODUCT_IN_HOME_TYPE = "Home";
     public static final String PRODUCT_IN_STORE_TYPE = "Store";
-    public static final String TOPPING = "Topping";
     public static final String CHECKOUT = "Checkout";
 
     private View view;
@@ -57,7 +56,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                     .inflate(R.layout.product_card, parent, false);
         }
 
-        else if (type.equals(PRODUCT_IN_STORE_TYPE) || type.equals(TOPPING) || type.equals(CHECKOUT))
+        else if (type.equals(PRODUCT_IN_STORE_TYPE) || type.equals(CHECKOUT))
         {
             view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.product_in_store_layout, parent, false);
@@ -111,7 +110,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                             new ProductDetail.AddProductListener() {
                         @Override
                         public void onAddingProductCallBack(Product curProduct) {
-                            product.setCustomerNote(curProduct.getCustomerNote());
                             product.setCurQuantity(curProduct.getCurQuantity());
                             notifyItemChanged(position);
                             addProductToCartListener.onAddingToCartCallBack(product, true);
@@ -146,52 +144,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             });
         }
 
-        else if (type.equals(TOPPING))
-        {
-            Picasso.get().load(product.getProductImg()).into(holder.productImage);
-
-            holder.productName.setText(product.getProductName());
-            int price = product.getProductPrice();
-
-            holder.productPrice.setText(Integer.toString((int) price) + "Đ");
-
-            holder.productQuantity.setText(Integer.toString(product.getCurQuantity()));
-
-            if (product.getCurQuantity() > 0)
-            {
-                holder.removeButton.setVisibility(View.VISIBLE);
-            }
-
-            else
-            {
-                holder.removeButton.setVisibility(View.INVISIBLE);
-            }
-
-            // Click on add button to add topping
-            holder.addButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int curQuantity = product.getCurQuantity();
-                    curQuantity++;
-                    product.setCurQuantity(curQuantity);
-                    notifyItemChanged(position);
-                    addProductToCartListener.onAddingToCartCallBack(product, true);
-                }
-            });
-
-            // Click on remove button to remove topping
-            holder.removeButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int curQuantity = product.getCurQuantity();
-                    curQuantity--;
-                    product.setCurQuantity(curQuantity);
-                    notifyItemChanged(position);
-                    addProductToCartListener.onAddingToCartCallBack(product, false);
-                }
-            });
-        }
-
         else if (type.equals(CHECKOUT))
         {
             Picasso.get().load(product.getProductImg()).into(holder.productImage);
@@ -204,20 +156,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
             holder.addButton.setVisibility(View.INVISIBLE);
             holder.removeButton.setVisibility(View.INVISIBLE);
-
-            List<Product> toppings = product.getToppingList();
-
-            if (toppings.size() > 0)
-            {
-                StringBuilder stringBuilder = new StringBuilder();
-
-                for (Product topping : toppings)
-                {
-                    stringBuilder.append(topping.getProductName());
-                }
-
-                holder.toppingList.setText(stringBuilder.toString());
-            }
         }
     }
 

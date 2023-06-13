@@ -23,9 +23,7 @@ public class DataHandler extends AsyncTask<String, Void, String> {
     public static final String TYPE_UPDATE_USER_INFO = "Update User Info";
     public static final String TYPE_GET_PRODUCT_STORE =  "Get Product Store";
     public static final String TYPE_GET_BY_STORE_ID = "Get By Store Id";
-    public static final String TYPE_GET_TOPPING = "Get Topping";
     public static final String TYPE_PURCHASE = "Purchase";
-    public static final String TYPE_INSERT_PURCHASE_DETAIL = "TYPE_INSERT_PURCHASE_DETAIL";
 
     // Update User Type
     public static final String TYPE_CHANGE_USER_NAME = "name";
@@ -127,12 +125,6 @@ public class DataHandler extends AsyncTask<String, Void, String> {
                 data = URLEncoder.encode("storeId", "UTF-8") + "=" + URLEncoder.encode(storeId, "UTF-8");
             }
 
-            else if (type.equals(TYPE_GET_TOPPING))
-            {
-                String storeId = strings[2];
-                data = URLEncoder.encode("storeId", "UTF-8") + "=" + URLEncoder.encode(storeId, "UTF-8");
-            }
-
             else if (type.equals(TYPE_PURCHASE))
             {
                 String purchaseId = strings[2];
@@ -142,6 +134,7 @@ public class DataHandler extends AsyncTask<String, Void, String> {
                 String address = strings[6];
                 String userId = strings[7];
                 String products = strings[8];
+                String note = strings[9];
 
                 data = URLEncoder.encode("purchaseId", "UTF-8") + "=" + URLEncoder.encode(purchaseId, "UTF-8")
                         + "&"
@@ -155,21 +148,7 @@ public class DataHandler extends AsyncTask<String, Void, String> {
                         + "&"
                         + URLEncoder.encode("userId", "UTF-8") + "=" + URLEncoder.encode(userId, "UTF-8")
                         + "&"
-                        + URLEncoder.encode("products", "UTF-8") + "=" + URLEncoder.encode(products, "UTF-8");
-            }
-
-            else if (type.equals(TYPE_INSERT_PURCHASE_DETAIL))
-            {
-                String purchaseId = strings[2];
-                String productId = strings[3];
-                String toppings = strings[4];
-                String note = strings[5];
-
-                data = URLEncoder.encode("purchaseId", "UTF-8") + "=" + URLEncoder.encode(purchaseId, "UTF-8")
-                        + "&"
-                        + URLEncoder.encode("productId", "UTF-8") + "=" + URLEncoder.encode(productId, "UTF-8")
-                        + "&"
-                        + URLEncoder.encode("toppings", "UTF-8") + "=" + URLEncoder.encode(toppings, "UTF-8")
+                        + URLEncoder.encode("products", "UTF-8") + "=" + URLEncoder.encode(products, "UTF-8")
                         + "&"
                         + URLEncoder.encode("note", "UTF-8") + "=" + URLEncoder.encode(note, "UTF-8");
             }
