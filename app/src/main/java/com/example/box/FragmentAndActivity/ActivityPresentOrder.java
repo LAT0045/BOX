@@ -24,7 +24,7 @@ public class ActivityPresentOrder extends AppCompatActivity {
 
     private void initializeUI()
     {
-        apoRCV = (RecyclerView) findViewById(R.id.apo_rcv);
+//        apoRCV = (RecyclerView) findViewById(R.id.apo_rcv);
     }
 
     private void setupRCV()

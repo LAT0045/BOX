@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -103,6 +104,7 @@ public class OrderFragment extends Fragment {
             @Override
             public void processFinish(String output) {
                 JSONArray jsonArray = null;
+                Log.d("TestO", output);
 
                 try {
                     jsonArray = new JSONArray(output);
@@ -112,16 +114,12 @@ public class OrderFragment extends Fragment {
                         JSONObject jsonObject = null;
 
                         jsonObject = jsonArray.getJSONObject(i);
-
-                        String storeName = jsonObject.getString("tencuahang");
-                        String foodImage  = jsonObject.getString("anhsanpham");
-                        String foodName  = jsonObject.getString("tensanpham");
+                        String id = jsonObject.getString("madondathang");
                         String status  = jsonObject.getString("tinhtrang");
-                        String price  = jsonObject.getString("dongia");
+                        String date  = jsonObject.getString("ngaydat");
 
-                        PurchaseOrder purchaseOrder = new PurchaseOrder(storeName, status, foodName, foodImage, price);
+                        PurchaseOrder purchaseOrder = new PurchaseOrder(status, date);
                         purchaseOrderList.add(purchaseOrder);
-
                     }
 
                     setupRCV();
@@ -137,7 +135,7 @@ public class OrderFragment extends Fragment {
             }
         });
 
-        dataHandler.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, dataHandler.TYPE_PRESENT_ORDER, urlStr, userId);
+        dataHandler.execute(dataHandler.TYPE_PRESENT_ORDER, urlStr, userId);
     }
 
     private void setupRCV()

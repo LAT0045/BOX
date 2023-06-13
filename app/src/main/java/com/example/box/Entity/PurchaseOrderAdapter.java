@@ -46,11 +46,8 @@ public class PurchaseOrderAdapter extends RecyclerView.Adapter<PurchaseOrderAdap
             return;
         }
 
-        holder.storeName.setText(purchaseOrder.getStoreName());
+        holder.date.setText(purchaseOrder.getDate());
         holder.status.setText(purchaseOrder.getStatus());
-        holder.foodName.setText(purchaseOrder.getFirstProductName());
-        holder.foodPrice.setText(purchaseOrder.getPrice());
-        Picasso.get().load(purchaseOrder.getFirstProductImg()).into(holder.foodImg);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,21 +69,15 @@ public class PurchaseOrderAdapter extends RecyclerView.Adapter<PurchaseOrderAdap
 
     public class PurchaseOrderViewHolder extends RecyclerView.ViewHolder{
 
-        private TextView storeName;
+        private TextView date;
         private TextView status;
-        private TextView foodName;
-        private TextView foodPrice;
-        private ImageView foodImg ;
 
 
         public PurchaseOrderViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            storeName = (TextView) itemView.findViewById(R.id.po_store_name);
-            status = (TextView) itemView.findViewById(R.id.po_status);
-            foodName = (TextView) itemView.findViewById(R.id.po_food_name);
-            foodPrice = (TextView) itemView.findViewById(R.id.po_food_price);
-            foodImg = (ImageView) itemView.findViewById(R.id.po_image);
+            date = (TextView) itemView.findViewById(R.id.ngay_dat);
+            status = (TextView) itemView.findViewById(R.id.tinh_trang);
 
         }
     }

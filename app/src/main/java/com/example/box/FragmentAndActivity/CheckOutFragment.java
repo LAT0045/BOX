@@ -61,7 +61,7 @@ public class CheckOutFragment extends Fragment {
     private RadioGroup radioGroup;
     private RadioButton cashButton;
     private RadioButton momoButton;
-    private String customerNote;
+    private String customerNote = "";
 
     private ImageView backButton;
     private TextView editButton;
@@ -92,7 +92,10 @@ public class CheckOutFragment extends Fragment {
         {
             checkOutProducts = bundle.getParcelableArrayList("checkOutList");
             customerNote = bundle.getString("note");
-
+            if(customerNote == null)
+            {
+                customerNote = "";
+            }
             // Set total price
             totalPriceTextView.setText(Integer.toString(getTotalPrice()) + "Đ");
         }
@@ -322,6 +325,7 @@ public class CheckOutFragment extends Fragment {
         purchaseOrderId = purchaseOrderId.replace("-", "");
 
         String urlStr = "/box/insertPurchase.php";
+        String urlStr1 = "/box/insertBill.php";
 
         // Get current user id
         String userId = FirebaseAuth.getInstance().getUid();
@@ -337,26 +341,44 @@ public class CheckOutFragment extends Fragment {
 
         Log.d("PRINT CHECK OUT LIST", checkOutListStr);
 
+        String billId = UUID.randomUUID().toString();
+        billId = billId.replace("-", "");
+
+
+        String finalBillId = billId;
+        String finalPurchaseOrderId = purchaseOrderId;
         DataHandler dataHandler = new DataHandler(new AsyncResponse() {
             @Override
             public void processFinish(String output) {
-                Log.d("TEST CHECK OUT CASH", output);
+                Log.d("TEST CHECK OUT CASH", "CÓ");
                 if (!output.equals("NO"))
                 {
-                    FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                    DataHandler handler = new DataHandler(new AsyncResponse() {
+                        @Override
+                        public void processFinish(String output) {
+                            Log.d("TEST Hóa Đơn", output);
+                            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
 
-                    CheckOutDoneFragment checkOutDone = new CheckOutDoneFragment();
+                            CheckOutDoneFragment checkOutDone = new CheckOutDoneFragment();
 
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.container, checkOutDone)
-                            .addToBackStack(null)
-                            .commit();
+                            fragmentManager.beginTransaction()
+                                    .replace(R.id.container, checkOutDone)
+                                    .addToBackStack(null)
+                                    .commit();
+                        }
+                    });
+
+                    handler.execute(DataHandler.TYPE_ORDER_ID, urlStr1, finalBillId, currentDateStr, Integer.toString(getTotalPrice()), finalPurchaseOrderId);
+
                 }
             }
         });
-        dataHandler.execute(DataHandler.TYPE_PURCHASE, urlStr, purchaseOrderId, appointment,
-                phoneNumber, currentDateStr, address, userId, checkOutListStr, customerNote);
+        dataHandler.execute(DataHandler.TYPE_PURCHASE, urlStr, purchaseOrderId, appointment, phoneNumber, currentDateStr, address, userId, checkOutListStr, customerNote);
     }
+
+
+
+
 
     private boolean isEmptyEditText(String phone, String address) {
         if (phone.equals("Chưa cập nhật số điện thoại"))
