@@ -5,9 +5,6 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Product implements Parcelable {
     public static final int FAST_FOOD_TYPE = 1;
     public static final int DRINK_TYPE = 2;
@@ -28,8 +25,6 @@ public class Product implements Parcelable {
     private String section;
 
     private int curQuantity;
-    private String customerNote = "";
-    private List<Product> toppingList;
 
     public Product(String productImg, String productName, int productPrice, String section) {
         this.productImg = productImg;
@@ -48,7 +43,6 @@ public class Product implements Parcelable {
         this.description = description;
         this.storeId = storeId;
         this.curQuantity = 0;
-        this.toppingList = new ArrayList<>();
     }
 
     public Product(String productImg, String productName, int productPrice,
@@ -134,14 +128,6 @@ public class Product implements Parcelable {
         this.productId = productId;
     }
 
-    public String getCustomerNote() {
-        return customerNote;
-    }
-
-    public void setCustomerNote(String customerNote) {
-        this.customerNote = customerNote;
-    }
-
     public int getCurQuantity() {
         return curQuantity;
     }
@@ -158,14 +144,6 @@ public class Product implements Parcelable {
         this.storeId = storeId;
     }
 
-    public List<Product> getToppingList() {
-        return toppingList;
-    }
-
-    public void setToppingList(List<Product> toppingList) {
-        this.toppingList = toppingList;
-    }
-
     protected Product(Parcel in) {
         this.productId = in.readString();
         this.productImg = in.readString();
@@ -175,7 +153,6 @@ public class Product implements Parcelable {
         this.description = in.readString();
         this.storeId = in.readString();
         this.curQuantity = in.readInt();
-        this.toppingList = in.createTypedArrayList(Product.CREATOR);
     }
 
     public static final Creator<Product> CREATOR = new Creator<Product>() {
@@ -205,6 +182,5 @@ public class Product implements Parcelable {
         dest.writeString(description);
         dest.writeString(storeId);
         dest.writeInt(curQuantity);
-        dest.writeTypedList(toppingList);
     }
 }

@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.widget.AppCompatEditText;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -30,6 +31,8 @@ public class OrderDetailFragment extends Fragment {
 
     private RecyclerView categoryRcv;
     private List<Product> checkOutProducts = new ArrayList<>();
+
+    private AppCompatEditText noteEditText;
 
     private TextView totalPriceText;
 
@@ -70,6 +73,7 @@ public class OrderDetailFragment extends Fragment {
     private void initializeUI() {
         categoryRcv = view.findViewById(R.id.category_rcv);
         totalPriceText = view.findViewById(R.id.total_price_text);
+        noteEditText = view.findViewById(R.id.note_edit_text);
 
         backButton = view.findViewById(R.id.back_button);
         checkOutButton = view.findViewById(R.id.check_out_button);
@@ -161,27 +165,24 @@ public class OrderDetailFragment extends Fragment {
         int total = 0;
         for(Product product : checkOutProducts)
         {
-            int toppingPrice = getToppingPrice(product.getToppingList());
             total += (product.getProductPrice() * product.getCurQuantity());
-            total += toppingPrice;
         }
         return total;
     }
 
-    private int getToppingPrice(List<Product> toppings) {
-        int total = 0;
-        for(Product product : toppings)
-        {
-            total += (product.getProductPrice() * product.getCurQuantity());
-        }
-        return total;
-    }
 
     private void clickCheckOut() {
         checkOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String note = noteEditText.getText().toString().trim();
                 Bundle bundle = new Bundle();
+
+                if (!note.isEmpty())
+                {
+                    bundle.putString("note", note);
+                }
+
                 bundle.putParcelableArrayList("checkOutList",
                         (ArrayList<? extends Parcelable>) checkOutProducts);
 

@@ -334,8 +334,6 @@ public class StoreDetail extends AppCompatActivity {
                         Log.d("THIS IS THE ITEM IN CART (BEFORE):", "THIS IS THE ITEM IN CART (BEFORE):");
                         Log.d("THIS IS THE ITEM IN CART (BEFORE):", cartItems.get(i).getProductName()
                                 + "_" + product.getProductId());
-                        Log.d("THIS IS THE ITEM IN CART (BEFORE):", "TOPPING: " +
-                                Integer.toString(cartItems.get(i).getToppingList().size()));
                     }
 
                     Log.d("", "______________________________");
@@ -365,8 +363,6 @@ public class StoreDetail extends AppCompatActivity {
                 if (tmpProduct != null)
                 {
                     tmpProducts.get(j).setCurQuantity(tmpProduct.getCurQuantity());
-                    tmpProducts.get(j).setCustomerNote(tmpProduct.getCustomerNote());
-                    tmpProducts.get(j).setToppingList(tmpProduct.getToppingList());
                     isChanged = true;
                 }
             }
@@ -415,17 +411,6 @@ public class StoreDetail extends AppCompatActivity {
     private int getTotalPrice() {
         int total = 0;
         for(Product product : cartItems)
-        {
-            int toppingPrice = getToppingPrice(product.getToppingList());
-            total += (product.getProductPrice() * product.getCurQuantity());
-            total += toppingPrice;
-        }
-        return total;
-    }
-
-    private int getToppingPrice(List<Product> toppings) {
-        int total = 0;
-        for(Product product : toppings)
         {
             total += (product.getProductPrice() * product.getCurQuantity());
         }
