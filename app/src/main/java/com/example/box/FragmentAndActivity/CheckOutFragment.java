@@ -37,6 +37,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -347,33 +348,38 @@ public class CheckOutFragment extends Fragment {
 
         String finalBillId = billId;
         String finalPurchaseOrderId = purchaseOrderId;
+
+        SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentDateTimeStr = dateFormat.format(currentDate);
+
+        try {
+            Date currentDateTime = dateFormat.parse(currentDateTimeStr);
+            System.out.println(currentDateTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         DataHandler dataHandler = new DataHandler(new AsyncResponse() {
             @Override
             public void processFinish(String output) {
                 Log.d("TEST CHECK OUT CASH", "CÓ");
                 if (!output.equals("NO"))
                 {
-                    DataHandler handler = new DataHandler(new AsyncResponse() {
-                        @Override
-                        public void processFinish(String output) {
-                            Log.d("TEST Hóa Đơn", output);
-                            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
 
-                            CheckOutDoneFragment checkOutDone = new CheckOutDoneFragment();
+                    FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
 
-                            fragmentManager.beginTransaction()
-                                    .replace(R.id.container, checkOutDone)
-                                    .addToBackStack(null)
-                                    .commit();
-                        }
-                    });
+                    CheckOutDoneFragment checkOutDone = new CheckOutDoneFragment();
 
-                    handler.execute(DataHandler.TYPE_ORDER_ID, urlStr1, finalBillId, currentDateStr, Integer.toString(getTotalPrice()), finalPurchaseOrderId);
-
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.container, checkOutDone)
+                            .addToBackStack(null)
+                            .commit();
                 }
             }
         });
-        dataHandler.execute(DataHandler.TYPE_PURCHASE, urlStr, purchaseOrderId, appointment, phoneNumber, currentDateStr, address, userId, checkOutListStr, customerNote);
+
+        dataHandler.execute(DataHandler.TYPE_PURCHASE, urlStr, purchaseOrderId, appointment, phoneNumber,
+                currentDateStr, address, userId, checkOutListStr, customerNote, finalBillId, Integer.toString(getTotalPrice()));
+
     }
 
 

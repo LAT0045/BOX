@@ -282,17 +282,11 @@ public class MainActivity extends AppCompatActivity {
 
                             DataHandler dataHandler = new DataHandler(output -> {
                                 Log.d("ID HASHED IN MAIN ACTIVITY", output);
-                                if (!output.equals("NO"))
-                                {
-                                    // Load the home page
-                                    loadHomePage();
-                                }
 
-                                else
-                                {
-                                    Toast.makeText(MainActivity.this, "Lỗi đăng nhập", Toast.LENGTH_SHORT)
-                                            .show();
-                                }
+                                loadHomePage();
+
+
+
                             });
 
 

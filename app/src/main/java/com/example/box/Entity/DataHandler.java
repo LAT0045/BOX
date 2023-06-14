@@ -25,7 +25,7 @@ public class DataHandler extends AsyncTask<String, Void, String> {
     public static final String TYPE_GET_BY_STORE_ID = "Get By Store Id";
     public static final String TYPE_PURCHASE = "Purchase";
     public static final String TYPE_PRESENT_ORDER = "Get id";
-    public static final String TYPE_ORDER_ID = "Get id";
+    public static final String TYPE_ORDER_ID = "Get order id";
 
     // Update User Type
     public static final String TYPE_CHANGE_USER_NAME = "name";
@@ -34,9 +34,8 @@ public class DataHandler extends AsyncTask<String, Void, String> {
     public static final String TYPE_CHANGE_USER_AVATAR = "avatar";
 
 
-    public final String IP = "http://192.168.1.9";
-    //public final String IP = "http://172.16.3.42";
-//    public final String IP = "http://192.168.1.6";
+    public final String IP = "http://10.14.139.254";
+
 
     private AsyncResponse asyncResponse;
 
@@ -137,6 +136,8 @@ public class DataHandler extends AsyncTask<String, Void, String> {
                 String userId = strings[7];
                 String products = strings[8];
                 String note = strings[9];
+                String billId = strings[10];
+                String total = strings[11];
 
                 data = URLEncoder.encode("purchaseId", "UTF-8") + "=" + URLEncoder.encode(purchaseId, "UTF-8")
                         + "&"
@@ -152,7 +153,12 @@ public class DataHandler extends AsyncTask<String, Void, String> {
                         + "&"
                         + URLEncoder.encode("products", "UTF-8") + "=" + URLEncoder.encode(products, "UTF-8")
                         + "&"
-                        + URLEncoder.encode("note", "UTF-8") + "=" + URLEncoder.encode(note, "UTF-8");
+                        + URLEncoder.encode("note", "UTF-8") + "=" + URLEncoder.encode(note, "UTF-8")
+                        + "&"
+                        + URLEncoder.encode("billId", "UTF-8") + "=" + URLEncoder.encode(billId, "UTF-8")
+                        + "&"
+                        + URLEncoder.encode("total", "UTF-8") + "=" + URLEncoder.encode(total, "UTF-8");
+
             }
             else if(type.equals(TYPE_PRESENT_ORDER))
             {
